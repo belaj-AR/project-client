@@ -27,7 +27,6 @@ class Login extends Component {
     }
 
     this.props.actionLogin(dataUser)
-    
   }
 
   render(){

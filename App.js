@@ -21,10 +21,14 @@ import {
 import Config from './config';
 
 import Login from './src/pages/Login'
+import Register from './src/pages/Register'
 
 const MyApp = createBottomTabNavigator ({
   Login: {
     screen: Login
+  },
+  Register: {
+    screen: Register
   }
 })
 
