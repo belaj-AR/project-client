@@ -1,13 +1,6 @@
-/**
- * Copyright (c) 2017-present, Viro, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
 import React, { Component } from 'react';
+import { Provider } from 'react-redux'
+import store from './src/store'
 import {
   AppRegistry,
   Text,
@@ -23,6 +16,8 @@ import {
 } from 'react-viro';
 
 import Config from './config';
+
+import Login from './src/pages/Login'
 
 /*
  TODO: Insert your API key below
@@ -61,13 +56,20 @@ export default class ViroSample extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    if (this.state.navigatorType == UNSET) {
-      return this._getExperienceSelector();
-    } else if (this.state.navigatorType == VR_NAVIGATOR_TYPE) {
-      return this._getVRNavigator();
-    } else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
-      return this._getARNavigator();
-    }
+
+    return (
+      <Provider store={store}>
+        <Login/>
+      </Provider>
+    )
+
+    // if (this.state.navigatorType == UNSET) {
+    //   return this._getExperienceSelector();
+    // } else if (this.state.navigatorType == VR_NAVIGATOR_TYPE) {
+    //   return this._getVRNavigator();
+    // } else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
+    //   return this._getARNavigator();
+    // }
   }
 
   // Presents the user with a choice of an AR or VR experience
