@@ -10,6 +10,9 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
+import { createBottomTabNavigator } from 'react-navigation';
+
+
 import {
   ViroVRSceneNavigator,
   ViroARSceneNavigator
@@ -18,6 +21,12 @@ import {
 import Config from './config';
 
 import Login from './src/pages/Login'
+
+const MyApp = createBottomTabNavigator ({
+  Login: {
+    screen: Login
+  }
+})
 
 /*
  TODO: Insert your API key below
@@ -58,16 +67,18 @@ export default class ViroSample extends Component {
   render() {
 
     return (
-      <Provider store={store}>
-        <Login/>
+      <Provider store={store} style={styles.Container}>
+        <MyApp/>
       </Provider>
     )
 
     // if (this.state.navigatorType == UNSET) {
     //   return this._getExperienceSelector();
-    // } else if (this.state.navigatorType == VR_NAVIGATOR_TYPE) {
+    // } 
+    // else if (this.state.navigatorType == VR_NAVIGATOR_TYPE) {
     //   return this._getVRNavigator();
-    // } else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
+    // } 
+    // else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
     //   return this._getARNavigator();
     // }
   }
@@ -131,6 +142,12 @@ export default class ViroSample extends Component {
     this.setState({
       navigatorType : UNSET
     })
+  }
+}
+
+const styles = {
+  Container: {
+    backgroundColor: "#FFF"
   }
 }
 

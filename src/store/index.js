@@ -1,9 +1,10 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk';
 import FormInput from '../reducers/FormInput'
+import StatusLogin from '../reducers/StatusLogin'
 
 const reducers = combineReducers({
-  FormInput
+  FormInput, StatusLogin
 })
 
 const store = createStore(
