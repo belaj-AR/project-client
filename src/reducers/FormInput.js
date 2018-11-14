@@ -13,6 +13,11 @@ function Login (state = defaultState, action) {
         ...state,
         [action.payload.key]: action.payload.val,
       }
+    case 'SET_STATE_REGISTER':
+      return {
+        ...state,
+        [action.payload.key]: action.payload.val,
+      }
     default:
       return state
   }
