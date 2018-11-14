@@ -3,8 +3,10 @@ import {View, Text} from 'react-native'
 import { connect } from 'react-redux'
 
 import Input from '../components/Input'
+import ButtonComp from '../components/Button'
 
 import setStateLogin from '../actions/setStateLogin'
+import actionLogin from '../actions/login'
 
 class Login extends Component {
 
@@ -16,6 +18,16 @@ class Login extends Component {
     }
 
     this.props.setStateLogin(dataUser)
+  }
+
+  actionLogin = () => {
+    let dataUser = {
+      email: this.props.email,
+      password: this.props.password
+    }
+
+    this.props.actionLogin(dataUser)
+    
   }
 
   render(){
@@ -38,6 +50,8 @@ class Login extends Component {
             ) 
           }
         </View>
+
+        <ButtonComp fn={() => this.actionLogin()} title="LOGIN"/>       
       </View>
     )
   }
@@ -47,9 +61,8 @@ class Login extends Component {
 const styles = {
 
   containerStyle: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 5
+    flex: 1,
+    backgroundColor: '#FFF'
   }
 
 }
@@ -63,7 +76,8 @@ const setStateToProps = (state) => {
 
 const setDispatchToProps = (dispatch) => {
   return({
-    setStateLogin: (dataUser) => dispatch(setStateLogin(dataUser))
+    setStateLogin: (dataUser) => dispatch(setStateLogin(dataUser)),
+    actionLogin: (dataUser) => dispatch(actionLogin(dataUser))
   })
 }
 

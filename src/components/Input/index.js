@@ -15,7 +15,7 @@ const styles = {
   inputStyle: {
     height: 60,
     borderWidth: 1,
-    borderCOlor: 'grey'
+    borderColor: 'grey'
   }
 }
 
