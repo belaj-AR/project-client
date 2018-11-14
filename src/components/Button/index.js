@@ -1,11 +1,22 @@
 import React from 'react'
-import {Button, TouchableOpacity} from 'react-native'
+import {TouchableOpacity, View, Text} from 'react-native'
 
-const ButtonComp = ({fn, title}) => {
+const ButtonComp = ({fn, title, style, styleText}) => {
 
   return (
-    <TouchableOpacity>
-      <Button onPress={() => fn()} title={title}/>
+    <TouchableOpacity
+      style={{
+        padding: 5
+      }}
+      onPress={() => fn()}
+    >
+      <View
+        style={style}
+        >
+        <Text
+          style={styleText}
+        >{ title }</Text>
+      </View>
     </TouchableOpacity>
   )
 

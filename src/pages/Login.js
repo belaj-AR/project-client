@@ -31,26 +31,80 @@ class Login extends Component {
 
   render(){
 
-    const { containerStyle } = styles
+    const { 
+      containerStyle,
+      paddingOuter,
+      textContentPage,
+      boxContentTitle,
+      boxContent,
+      BoxButtonLogin,
+      BoxButtonRegister,
+      buttonTextLoginStyle,
+      buttonTextRegisterStyle
+    } = styles
 
-    const dataInput = [ {placeholder:'Enter Email', fn: (e) => this.changeValue('email', e)}, 
-                        {placeholder:'Enter Password', fn: (e) => this.changeValue('password', e)}]
+    const dataInput = [{
+      placeholder:'Your Email',
+      fn: (e) => this.changeValue('email', e),
+      secureMode: false,
+      style: {
+        fontSize: 20,
+        letterSpacing: 1,
+        color: '#6E6E6D',
+        marginTop: 10,
+        padding: 8,
+        height: 50,
+        borderColor: 'grey',
+        borderRadius: 10
+      }
+    },{
+      placeholder:'Password',
+      fn: (e) => this.changeValue('password', e),
+      secureMode: true,
+      style: {
+        fontSize: 20,
+        letterSpacing: 5,
+        color: '#6E6E6D',
+        marginTop: 10,
+        padding: 8,
+        height: 50,
+        borderColor: 'grey',
+        borderRadius: 10
+      }
+    }]
 
     return (
       <View style={containerStyle}>
-        <View>
-          <Text>LOGIN</Text>
+        <View style={paddingOuter}>
         </View>
-
-        <View>
-          { 
-            dataInput.map((data,idx) => 
-              <Input key={idx} data={data}/>
-            ) 
-          }
+        <View style={boxContent}>
+          <View
+            style={boxContentTitle}
+          >
+            <Text
+              style={textContentPage}
+            >Login</Text>
+          </View>
+          <View>
+            { 
+              dataInput.map((data,idx) => 
+                <Input key={idx} data={data}/>
+              ) 
+            }
+            <ButtonComp
+              style={BoxButtonLogin}
+              styleText={buttonTextLoginStyle}
+              fn={() => this.actionLogin()}
+              title="Login"/>
+            <ButtonComp
+              style={BoxButtonRegister}
+              styleText={buttonTextRegisterStyle}
+              fn={() => this.actionLogin()}
+              title="Register"/>
+          </View>
+          </View>
+          <View style={paddingOuter}>
         </View>
-
-        <ButtonComp fn={() => this.actionLogin()} title="LOGIN"/>       
       </View>
     )
   }
@@ -58,10 +112,55 @@ class Login extends Component {
 }
 
 const styles = {
-
   containerStyle: {
     flex: 1,
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  paddingOuter: {
+    flex:0.1
+  },
+  textContentPage: {
+    fontSize: 30,
+    fontWeight: '500',
+    color: '#BC6A0C'
+  },
+  boxContent: {
+    flex:1,
+    justifyContent: 'center',
+    flexDirection: 'column'
+  },
+  boxContentTitle: {
+    alignItems: 'center'
+  },
+  BoxButtonLogin: {
+    elevation: 1,
+    marginTop: 50,
+    borderRadius: 7,
+    backgroundColor: '#F4D34E',
+    height: 33,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  BoxButtonRegister: {
+    elevation: 1,
+    marginTop: 5,
+    borderRadius: 7,
+    backgroundColor: '#F4D34E',
+    height: 33,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonTextRegisterStyle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#BC6A0C'
+  },
+  buttonTextLoginStyle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#BC6A0C'
   }
 
 }
