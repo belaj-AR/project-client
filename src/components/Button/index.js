@@ -5,9 +5,6 @@ const ButtonComp = ({fn, title, style, styleText}) => {
 
   return (
     <TouchableOpacity
-      style={{
-        padding: 5
-      }}
       onPress={() => fn()}
     >
       <View

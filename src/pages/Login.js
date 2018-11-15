@@ -40,7 +40,8 @@ class Login extends Component {
       BoxButtonLogin,
       BoxButtonRegister,
       buttonTextLoginStyle,
-      buttonTextRegisterStyle
+      buttonTextRegisterStyle,
+      paddingOuterContent
     } = styles
 
     const dataInput = [{
@@ -48,28 +49,30 @@ class Login extends Component {
       fn: (e) => this.changeValue('email', e),
       secureMode: false,
       style: {
-        fontSize: 20,
+        fontSize: 17,
         letterSpacing: 1,
-        color: '#6E6E6D',
+        color: '#192E5B',
         marginTop: 10,
         padding: 8,
-        height: 50,
+        height: 40,
         borderColor: 'grey',
-        borderRadius: 10
+        borderRadius: 7,
+        backgroundColor: '#FFF'
       }
     },{
       placeholder:'Password',
       fn: (e) => this.changeValue('password', e),
       secureMode: true,
       style: {
-        fontSize: 20,
+        fontSize: 17,
         letterSpacing: 5,
-        color: '#6E6E6D',
+        color: '#192E5B',
         marginTop: 10,
         padding: 8,
-        height: 50,
+        height: 40,
         borderColor: 'grey',
-        borderRadius: 10
+        borderRadius: 7,
+        backgroundColor: '#FFF'
       }
     }]
 
@@ -77,33 +80,47 @@ class Login extends Component {
       <View style={containerStyle}>
         <View style={paddingOuter}>
         </View>
-        <View style={boxContent}>
+        <View style={{
+          flex: 1
+        }}>
+          <View style={paddingOuterContent}>
+          </View>
           <View
-            style={boxContentTitle}
+            style={{
+              flex: 1
+            }}
           >
-            <Text
-              style={textContentPage}
-            >Login</Text>
+            <View style={boxContent}>  
+              <View
+                style={boxContentTitle}
+              >
+                <Text
+                  style={textContentPage}
+                >Login</Text>
+              </View>
+              <View>
+                { 
+                  dataInput.map((data,idx) => 
+                    <Input key={idx} data={data}/>
+                  ) 
+                }
+                <ButtonComp
+                  style={BoxButtonLogin}
+                  styleText={buttonTextLoginStyle}
+                  fn={() => this.actionLogin()}
+                  title="Login"/>
+                <ButtonComp
+                  style={BoxButtonRegister}
+                  styleText={buttonTextRegisterStyle}
+                  fn={() => this.actionLogin()}
+                  title="Register"/>
+              </View>
+            </View>
           </View>
-          <View>
-            { 
-              dataInput.map((data,idx) => 
-                <Input key={idx} data={data}/>
-              ) 
-            }
-            <ButtonComp
-              style={BoxButtonLogin}
-              styleText={buttonTextLoginStyle}
-              fn={() => this.actionLogin()}
-              title="Login"/>
-            <ButtonComp
-              style={BoxButtonRegister}
-              styleText={buttonTextRegisterStyle}
-              fn={() => this.actionLogin()}
-              title="Register"/>
+          <View style={paddingOuterContent}>
           </View>
-          </View>
-          <View style={paddingOuter}>
+        </View>
+        <View style={paddingOuter}>
         </View>
       </View>
     )
@@ -114,53 +131,62 @@ class Login extends Component {
 const styles = {
   containerStyle: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#72A2C0',
     justifyContent: 'center',
     flexDirection: 'row'
   },
   paddingOuter: {
-    flex:0.1
+    flex:0.05,
+  },
+  paddingOuterContent: {
+    flex:0.37,
   },
   textContentPage: {
-    fontSize: 30,
-    fontWeight: '500',
-    color: '#BC6A0C'
+    fontSize: 40,
+    fontWeight: '700',
+    color: '#BCDAFB'
   },
   boxContent: {
     flex:1,
+    elevation: 1,
     justifyContent: 'center',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    backgroundColor: '#1D65A6',
+    padding: 20,
+    borderRadius: 10
   },
   boxContentTitle: {
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 1
   },
   BoxButtonLogin: {
-    elevation: 1,
-    marginTop: 50,
+    elevation: 2,
+    marginTop: 40,
     borderRadius: 7,
-    backgroundColor: '#F4D34E',
-    height: 33,
+    backgroundColor: '#192E5B',
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
   BoxButtonRegister: {
-    elevation: 1,
+    elevation: 2,
     marginTop: 5,
     borderRadius: 7,
-    backgroundColor: '#F4D34E',
-    height: 33,
+    backgroundColor: '#192E5B',
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonTextRegisterStyle: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#BC6A0C'
+    color: '#BCDAFB'
   },
   buttonTextLoginStyle: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#BC6A0C'
+    color: '#BCDAFB'
   }
 
 }

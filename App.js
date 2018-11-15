@@ -25,10 +25,10 @@ import Register from './src/pages/Register'
 import CharOption from './src/pages/CharOptions'
 
 const MyApp = createBottomTabNavigator ({
-  Login: {
+  "Login": {
     screen: Login
   },
-  Register: {
+  "Register": {
     screen: Register
   },
   "Select Monster": {
@@ -36,7 +36,7 @@ const MyApp = createBottomTabNavigator ({
   }
 },
  {
-   initialRouteName: "Select Monster"
+   initialRouteName: "Register"
  }
 )
 
