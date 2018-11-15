@@ -9,6 +9,7 @@ import setStateLogin from '../../actions/setStateLogin'
 import actionLogin from '../../actions/login'
 
 import config from '../../../config'
+import AlertCatcher from './src/alertCatcher'
 
 const { firebaseAuth, ngrokTunnel } = config
 
@@ -41,39 +42,8 @@ class Login extends Component {
         this.setState({errorMessage: JSON.stringify(user.uid) })
       })
       .catch(({ code }) => {
-        if (code === 'auth/user-not-found') {
-          Alert.alert(
-            'Notification',
-            `Seems you not registered to our apps`,
-            [
-              {text: 'Ok', onPress: () => console.log('OK Pressed')},
-              {text: 'Register', onPress: () => console.log('OK Pressed')},
-            ],
-            { cancelable: false }
-          )
-        } else if (code === 'auth/invalid-email') {
-          Alert.alert(
-            'Notification',
-            `Opps.. seems your email is incorect`,
-            [
-              {text: 'Ok', onPress: () => console.log('OK Pressed')},
-            ],
-            { cancelable: false }
-          )
-        } else if (code === 'auth/wrong-password') {
-          Alert.alert(
-            'Notification',
-            `Opps.. seems your email or password is incorect`,
-            [
-              {text: 'Ok', onPress: () => console.log('OK Pressed')},
-            ],
-            { cancelable: false }
-          )
-        }
-        this.setState({errorMessage: JSON.stringify(code) })
+        return AlertCatcher(code)
       });
-
-    // this.props.actionLogin(dataUser)
   }
 
   render(){
