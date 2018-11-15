@@ -15,7 +15,7 @@ import { createBottomTabNavigator } from 'react-navigation';
 
 import {
   ViroVRSceneNavigator,
-  ViroARSceneNavigator
+  ViroARSceneNavigator,
 } from 'react-viro';
 
 import Config from './config';
@@ -23,6 +23,7 @@ import Config from './config';
 import Login from './src/pages/Login'
 import Register from './src/pages/Register'
 import CharOption from './src/pages/CharOptions'
+import LoadingPreGame from './src/pages/LoadingPreGame'
 
 const MyApp = createBottomTabNavigator ({
   "Login": {
@@ -33,10 +34,13 @@ const MyApp = createBottomTabNavigator ({
   },
   "Select Monster": {
     screen: CharOption
+  },
+  "Waiting Game": {
+    screen: LoadingPreGame
   }
 },
  {
-   initialRouteName: "Register"
+   initialRouteName: "Waiting Game"
  }
 )
 
