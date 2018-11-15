@@ -24,6 +24,7 @@ import Login from './src/pages/Login'
 import Register from './src/pages/Register'
 import CharOption from './src/pages/CharOptions'
 import LoadingPreGame from './src/pages/LoadingPreGame'
+import Game from './src/pages/Game'
 
 const MyApp = createBottomTabNavigator ({
   "Login": {
@@ -37,6 +38,9 @@ const MyApp = createBottomTabNavigator ({
   },
   "Waiting Game": {
     screen: LoadingPreGame
+  },
+  "Game": {
+    screen: Game
   }
 },
  {
