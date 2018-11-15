@@ -1,14 +1,29 @@
 import React, { Component } from 'react'
-import {View, Text} from 'react-native'
+import {View, Text, Alert, ScrollView} from 'react-native'
 import { connect } from 'react-redux'
+import axios from 'axios'
 
-import setStateRegister from '../actions/setStateRegister'
-import actionRegister from '../actions/register'
+import setStateRegister from '../../actions/setStateRegister'
+import actionRegister from '../../actions/register'
 
-import Input from '../components/Input'
-import ButtonComp from '../components/Button'
+import Input from '../../components/Input'
+import ButtonComp from '../../components/Button'
+import validatorInput from './fn/validatorInput'
+
+import config from '../../../config'
+
+const { firebaseAuth, ngrokTunnel } = config
 
 class Register extends Component {
+
+  constructor(props) {
+
+    super(props)
+
+    this.state = {
+      messageConsole: 's'
+    }
+  }
 
   changeValue = (key, val) => {
     let dataUser = {
@@ -16,6 +31,63 @@ class Register extends Component {
     }
 
     this.props.setStateRegister(dataUser)
+  }
+
+  createAccount = () => {
+
+    let { firstName, lastName, email, password } = this.props
+
+    let objVal = {
+      inputFname: firstName,
+      inputLname: lastName,
+      inputEmail: email,
+      inputPassword: password
+    }
+
+
+    validatorInput(objVal)
+      .then(data => {
+        return firebaseAuth.createUserWithEmailAndPassword(
+          String(email),
+          String(password)
+        )
+      })
+      .then(data => {
+        return axios({
+          url: `${ngrokTunnel}/users/register`,
+          method: 'post',
+          data: {
+            fname: firstName,
+            lname: lastName,
+            email: email,
+            uid: data.user.uid
+          }
+        })
+      })
+      .then(data => {
+        this.setState({messageConsole: JSON.stringify(data) })
+
+        Alert.alert(
+        'Notification',
+        'Creating an account success!',
+        [
+          {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+        ],
+        { cancelable: false }
+        )
+      })
+      .catch(err => {
+        this.setState({messageConsole: JSON.stringify(err) })
+
+        Alert.alert(
+        'Notification',
+        `Creating an account failed! ${err.message}`,
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+        )
+      })
   }
 
   actionRegister = () => {
@@ -122,41 +194,46 @@ class Register extends Component {
     ]
 
     return (
-      <View style={containerStyle}>
-        <View style={paddingOuter}>
-        </View>
-        <View style={{
-          flex:1
-        }}>
-          <View style={paddingOuterContent}>
+        <View style={containerStyle}>
+          <View style={paddingOuter}>
           </View>
-            <View style={boxContent}>
-              <View style={boxContentTitle}>
-                <Text
-                  style={textContentPage}
-                >Register</Text>
-              </View>
-
-              <View>
-                { 
-                  dataInput.map((data,idx) => 
-                    <Input key={idx} data={data}/>
-                  ) 
-                }
-              </View>
-
-              <ButtonComp
-                style={BoxButtonRegister}
-                styleText={buttonTextRegisterStyle}
-                fn={() => this.actionLogin()}
-                title="Submit"/>
+          <View style={{
+            flex:1
+          }}>
+            <View style={paddingOuterContent}>
             </View>
-          <View style={paddingOuterContent}>
+              <View style={boxContent}>
+                <View style={boxContentTitle}>
+                  <Text
+                    style={textContentPage}
+                  >Register</Text>
+                </View>
+
+                <View>
+                  { 
+                    dataInput.map((data,idx) => 
+                      <Input key={idx} data={data}/>
+                    ) 
+                  }
+                </View>
+
+                <ButtonComp
+                  style={BoxButtonRegister}
+                  styleText={buttonTextRegisterStyle}
+                  fn={() => this.createAccount()}
+                  title="Submit"/>
+              </View>
+            <View style={paddingOuterContent}>
+              <ScrollView>
+                <Text>
+                  { this.state.messageConsole }
+                </Text>
+              </ScrollView>
+            </View>
+          </View>
+          <View style={paddingOuter}>
           </View>
         </View>
-        <View style={paddingOuter}>
-        </View>
-      </View>
     )
   }
 }
