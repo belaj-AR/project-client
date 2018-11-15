@@ -11,19 +11,19 @@ class CharOptions extends Component {
 
   render() {
 
-    const { containerStyle, 
-            cardContainer,
+    const { conatinerMain,
+            containerStyle, 
             cardSection, 
             boxImage,
             imageStyle,
             boxContent } = styles
 
     const dataChar = [{image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'fire'},
-                    {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'water'},
-                    {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'wind'}]  
+                      {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'water'},
+                      {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'wind'}]  
 
     return (
-      <View >
+      <View style={conatinerMain}>
         {
           dataChar.map((char,idx) => 
             <View style={containerStyle}>
@@ -51,17 +51,14 @@ class CharOptions extends Component {
 }
 
 const styles = {
-  cardContainer: {
-    marginTop: 5
+  conatinerMain: {
+    flex: 1,
+    backgroundColor: "#FFF"
   },
   containerStyle: {
     borderWidth: 1,
     borderRadius: 2,
     borderColor: "#ddd",
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 2,
     elevation: 1,
     marginLeft: 5,
     marginRight: 5,
