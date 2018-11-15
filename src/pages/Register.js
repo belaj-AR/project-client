@@ -31,28 +31,131 @@ class Register extends Component {
 
   render() {
 
-    const { containerStyle } = styles
+    const { 
+      containerStyle,
+      paddingOuter,
+      boxContent,
+      paddingOuterContent,
+      boxContentTitle,
+      textContentPage,
+      BoxButtonRegister,
+      buttonTextRegisterStyle
+    } = styles
 
-    const dataInput = [ {placeholder:'Enter First Name', fn: (e) => this.changeValue('firstName', e)}, 
-                        {placeholder:'Enter Last Name', fn: (e) => this.changeValue('lastName', e)},
-                        {placeholder:'Enter Email', fn: (e) => this.changeValue('email', e)},
-                        {placeholder:'Enter Password', fn: (e) => this.changeValue('password', e)}]
+    const dataInput = [
+      {
+        placeholder:'Enter First Name',
+        fn: (e) => this.changeValue('firstName', e),
+        secureMode: false,
+        style: {
+          fontSize: 17,
+          letterSpacing: 5,
+          color: '#192E5B',
+          marginTop: 10,
+          padding: 8,
+          height: 40,
+          borderColor: 'grey',
+          borderRadius: 7,
+          backgroundColor: '#FFF'
+        }
+      }, {
+        placeholder:'Enter Last Name',
+        fn: (e) => this.changeValue('lastName', e),
+        secureMode: false,
+        style: {
+          fontSize: 17,
+          letterSpacing: 5,
+          color: '#192E5B',
+          marginTop: 10,
+          padding: 8,
+          height: 40,
+          borderColor: 'grey',
+          borderRadius: 7,
+          backgroundColor: '#FFF'
+        }
+      },{
+        placeholder:'Enter Email',
+        fn: (e) => this.changeValue('email', e),
+        secureMode: false,
+        style: {
+          fontSize: 17,
+          letterSpacing: 5,
+          color: '#192E5B',
+          marginTop: 10,
+          padding: 8,
+          height: 40,
+          borderColor: 'grey',
+          borderRadius: 7,
+          backgroundColor: '#FFF'
+        }
+      },{
+        placeholder:'Enter Password',
+        fn: (e) => this.changeValue('password', e),
+        secureMode: true,
+        style: {
+          fontSize: 17,
+          letterSpacing: 5,
+          color: '#192E5B',
+          marginTop: 10,
+          padding: 8,
+          height: 40,
+          borderColor: 'grey',
+          borderRadius: 7,
+          backgroundColor: '#FFF'
+        }
+      },{
+        placeholder:'Password',
+        fn: (e) => this.changeValue('password', e),
+        secureMode: true,
+        style: {
+          fontSize: 17,
+          letterSpacing: 5,
+          color: '#192E5B',
+          marginTop: 10,
+          padding: 8,
+          height: 40,
+          borderColor: 'grey',
+          borderRadius: 7,
+          backgroundColor: '#FFF'
+        }
+      }
+    ]
 
     return (
       <View style={containerStyle}>
-        <View>
-          <Text>LOGIN</Text>
+        <View style={paddingOuter}>
         </View>
+        <View style={{
+          flex:1
+        }}>
+          <View style={paddingOuterContent}>
+          </View>
+            <View style={boxContent}>
+              <View style={boxContentTitle}>
+                <Text
+                  style={textContentPage}
+                >Register</Text>
+              </View>
 
-        <View>
-          { 
-            dataInput.map((data,idx) => 
-              <Input key={idx} data={data}/>
-            ) 
-          }
+              <View>
+                { 
+                  dataInput.map((data,idx) => 
+                    <Input key={idx} data={data}/>
+                  ) 
+                }
+              </View>
+
+              <ButtonComp
+                style={BoxButtonRegister}
+                styleText={buttonTextRegisterStyle}
+                fn={() => this.actionLogin()}
+                title="Submit"/>
+            </View>
+          <View style={paddingOuterContent}>
+          </View>
         </View>
-
-        <ButtonComp fn={() => this.actionRegister()} title="REGISTER"/>       
+        <View style={paddingOuter}>
+        </View>
       </View>
     )
   }
@@ -63,9 +166,50 @@ const styles = {
 
   containerStyle: {
     flex: 1,
-    backgroundColor: '#FFF'
-  }
-
+    backgroundColor: '#72A2C0',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  paddingOuter: {
+    flex:0.05
+  },
+  boxContent: {
+    flex:1,
+    elevation: 1,
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: '#1D65A6',
+    padding: 20,
+    borderRadius: 10
+  },
+  boxContentTitle: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 2
+  },
+  paddingOuterContent: {
+    flex:0.2
+  },
+  textContentPage: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: '#BCDAFB'
+  },
+  BoxButtonRegister: {
+    elevation: 2,
+    marginTop: 30,
+    borderRadius: 7,
+    backgroundColor: '#192E5B',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonTextRegisterStyle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#BCDAFB'
+  },
+  
 }
 
 const setStateToProps = (state) => {
