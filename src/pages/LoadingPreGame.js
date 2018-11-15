@@ -1,12 +1,28 @@
 import React, { Component } from 'react'
-import  {View,Text, Image} from 'react-native'
+import  { View,Text, Image } from 'react-native'
+import { ViroARSceneNavigator } from 'react-viro';
+
+import Game from '../pages/Game'
+import Config from '../../config';
+
+const  sharedProps = {
+  apiKey: Config.API_KEY_VIRO,
+}
 
 import ButtonComp from '../components/Button'
 
 class LoadingPreGame extends Component {
 
+  constructor(){
+    super()
+
+    this.state = {
+      sharedProps : sharedProps
+    }
+  }
+
   playGame = () => {
-    alert('masuk')
+    this.props.navigation.navigate('Game')
   }
 
   render(){
@@ -56,7 +72,16 @@ class LoadingPreGame extends Component {
     )
   }
 
+  _getARNavigator() {
+    return (
+      <ViroARSceneNavigator {...this.state.sharedProps}
+        initialScene={{scene: InitialARScene}} />
+    );
+  }
+
 }
+
+
 
 const styles = {
   containerStyle: {
