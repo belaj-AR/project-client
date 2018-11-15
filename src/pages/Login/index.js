@@ -1,14 +1,26 @@
 import React, {Component} from 'react'
-import {View, Text} from 'react-native'
+import {View, Text, Alert, ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 
-import Input from '../components/Input'
-import ButtonComp from '../components/Button'
+import Input from '../../components/Input'
+import ButtonComp from '../../components/Button'
 
-import setStateLogin from '../actions/setStateLogin'
-import actionLogin from '../actions/login'
+import setStateLogin from '../../actions/setStateLogin'
+import actionLogin from '../../actions/login'
+
+import config from '../../../config'
+
+const { firebaseAuth, ngrokTunnel } = config
 
 class Login extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      errorMessage: 'console'
+    }
+  }
 
   componentDidMount = () => {}
 
@@ -21,12 +33,47 @@ class Login extends Component {
   }
 
   actionLogin = () => {
-    let dataUser = {
-      email: this.props.email,
-      password: this.props.password
-    }
 
-    this.props.actionLogin(dataUser)
+    let { email, password } = this.props
+
+    firebaseAuth.signInWithEmailAndPassword(email, password)
+      .then(({ user }) => {
+        this.setState({errorMessage: JSON.stringify(user.uid) })
+      })
+      .catch(({ code }) => {
+        if (code === 'auth/user-not-found') {
+          Alert.alert(
+            'Notification',
+            `Seems you not registered to our apps`,
+            [
+              {text: 'Ok', onPress: () => console.log('OK Pressed')},
+              {text: 'Register', onPress: () => console.log('OK Pressed')},
+            ],
+            { cancelable: false }
+          )
+        } else if (code === 'auth/invalid-email') {
+          Alert.alert(
+            'Notification',
+            `Opps.. seems your email is incorect`,
+            [
+              {text: 'Ok', onPress: () => console.log('OK Pressed')},
+            ],
+            { cancelable: false }
+          )
+        } else if (code === 'auth/wrong-password') {
+          Alert.alert(
+            'Notification',
+            `Opps.. seems your email or password is incorect`,
+            [
+              {text: 'Ok', onPress: () => console.log('OK Pressed')},
+            ],
+            { cancelable: false }
+          )
+        }
+        this.setState({errorMessage: JSON.stringify(code) })
+      });
+
+    // this.props.actionLogin(dataUser)
   }
 
   render(){
@@ -118,6 +165,11 @@ class Login extends Component {
             </View>
           </View>
           <View style={paddingOuterContent}>
+            <ScrollView>
+              <Text>
+                { this.state.errorMessage }
+              </Text>
+            </ScrollView>
           </View>
         </View>
         <View style={paddingOuter}>
