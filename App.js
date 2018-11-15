@@ -22,6 +22,7 @@ import Config from './config';
 
 import Login from './src/pages/Login'
 import Register from './src/pages/Register'
+import CharOption from './src/pages/CharOptions'
 
 const MyApp = createBottomTabNavigator ({
   Login: {
@@ -29,8 +30,15 @@ const MyApp = createBottomTabNavigator ({
   },
   Register: {
     screen: Register
+  },
+  "Select Monster": {
+    screen: CharOption
   }
-})
+},
+ {
+   initialRouteName: "Select Monster"
+ }
+)
 
 /*
  TODO: Insert your API key below
