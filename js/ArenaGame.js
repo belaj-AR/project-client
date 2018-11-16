@@ -15,6 +15,13 @@ import {
   ViroARPlaneSelector,
   ViroNode,
   ViroAnimations,
+  ViroSceneNavigator,
+  ViroScene,
+  Viro360Video,
+  Viro360Image,
+  ViroUtils,
+  ViroPortal,
+  ViroPortalScene,
 } from 'react-viro';
 
 export default class ArenaGame extends Component {
@@ -24,7 +31,9 @@ export default class ArenaGame extends Component {
 
     // Set initial state here
     this.state = {
-      text : "preparing arena.."
+      text : "preparing arena..",
+      welcomeText: "opening portal",
+      summonDragons: true,
     };
 
     // bind 'this' to functions
@@ -37,52 +46,109 @@ export default class ArenaGame extends Component {
     return (
       <ViroARScene onTrackingUpdated={this._onInitialized}>
        
-        
-        <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
-        
-        <ViroNode position={[0,-1,0]} dragType="FixedToWorld" onDrag={()=>{}} >
+         
+        {/* <ViroNode position={[0,-1,0]} dragType="FixedToWorld" onDrag={()=>{}} >
          <ViroBox position={[0, -.5, -1]} scale={[.3, .3, .1]} materials={["grid"]} animation={{name: "rotate", run: true, loop: true}}/>
-        </ViroNode>
+        </ViroNode> */}
+
         
         
         <ViroAmbientLight color={"#aaaaaa"} />
+
+        
+        {/* <ViroAmbientLight color={"#aaaaaa"} /> 
+ 
         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
-          position={[0, 3, -5]} color="#ffffff" castsShadow={true} />
-          {/* <Viro3DObject
-            source={require('./res/emoji_smile/emoji_smile.vrx')}
-            resources={[require('./res/emoji_smile/emoji_smile_diffuse.png'),
-                require('./res/emoji_smile/emoji_smile_normal.png'),
-                require('./res/emoji_smile/emoji_smile_specular.png')]}
-            position={[-.5, .5, -1]}
-            scale={[.2, .2, .2]}
-            type="VRX" /> */}
+          position={[0, 3, -5]} color="#ffffff" castsShadow={true} />  */}
+          
 
-            {/* TODO UPDATE MODELS BASED ON USER'S PICK */}
-            <Viro3DObject
-            source={require('./res/emoji_smile/emoji_smile.vrx')}
-            position={[-1, 0, -5]}
-            animation={{name: "rotatePlayerOne", run: true, loop: true}}
-            scale={[0.8, 0.8, 0.8]}
             
-            type="VRX"
-            dragType="FixedDistance" onDrag={()=>{}}
-          />
+          <ViroText text={this.state.welcomeText} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
 
-          {/* TODO UPDATE MODELS BASED ON USER'S PICK */}
-          <Viro3DObject
-            source={require('./res/emoji_smile/emoji_smile.vrx')}
-            position={[1, 0, -1]}
-            scale={[0.8, 0.8, 0.8]}
-            animation={{name: "rotatePLayerTwo", run: true, loop: false}}
-            onLoadEnd={this._onLoadEnd}
-            type="VRX"
-            dragType="FixedDistance" onDrag={()=>{}}
-          />
+          <ViroAmbientLight color="#ffffff" intensity={200}/>
+          <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
+            <ViroPortal position={[0, 0, -3]} scale={[.1, .1, .1]}>
+              <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
+                resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
+                            require('./res/portal_res/portal_ship/portal_ship_normal.png'),
+                            require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
+                type="VRX" onLoadEnd={this.portalOnLoad}/>
+            </ViroPortal>
+            <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
+
+            
+            <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
+
+
+            {this.state.summonDragons && 
+             
+                <ViroAmbientLight color="#ffffff" intensity={200}>
+                  <Viro3DObject
+                  source={require('./res/emoji_smile/emoji_smile.vrx')}
+                  position={[-1, 0, -8]}
+                  animation={{name: "rotatePlayerOne", run: true, loop: true}}
+                  scale={[0.8, 0.8, 0.8]}
+                  
+                  type="VRX"
+                  dragType="FixedDistance" onDrag={()=>{}}
+                /> 
+              </ViroAmbientLight>
+              
+           
+             }
+
+             <Viro3DObject
+              source={require('./res/emoji_smile/emoji_smile.vrx')}
+              position={[1, 0, -7]}
+              scale={[0.8, 0.8, 0.8]}
+              animation={{name: "rotatePLayerTwo", run: true, loop: false}}
+              onLoadEnd={this._onLoadEnd}
+              type="VRX"
+              dragType="FixedDistance" onDrag={()=>{}}
+              />
+
+
+            
+
+
+
+            <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}}>
+              <ViroPortal position={[0, 0, -9]} scale={[.1, .1, .1]}>
+                <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
+                  resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
+                              require('./res/portal_res/portal_ship/portal_ship_normal.png'),
+                              require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
+                  type="VRX"/>
+              </ViroPortal>
+            <Viro360Image source={require("./res/portal_res/360_island.jpg")} />
+
+
+            
+        </ViroPortalScene>
+
+
+        </ViroPortalScene>
        
  
       </ViroARScene>
     );
   }
+
+  portalOnLoad = () => {
+    this.setState({
+      welcomeText: "step inside"
+    });
+  }
+
+  summonDragons = () => {
+    setTimeout( () => {
+      this.setState({
+        summonDragons: true
+      });
+    }, 10000)
+
+  }
+  
 
   _onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
