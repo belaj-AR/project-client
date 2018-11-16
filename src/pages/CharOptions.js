@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, Image} from 'react-native'
+import {View, Text, Image, ScrollView} from 'react-native'
 
 import ButtonComp from '../components/Button'
 
@@ -16,34 +16,61 @@ class CharOptions extends Component {
             cardSection, 
             boxImage,
             imageStyle,
-            boxContent } = styles
+            boxContent,
+            charTextStyle,
+            boxButton,
+            buttonStyle,
+            buttonText } = styles
 
-    const dataChar = [{image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'fire'},
-                      {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'water'},
-                      {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', name: 'Dragon', element: 'wind'}]  
+    const dataChar = [{image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', 
+                      name: 'DRAGON', element: 'FIRE', 
+                      styles :{ borderWidth: 1,
+                        borderRadius: 2,
+                        borderColor: "#ddd",
+                        backgroundColor: "#ED7C02",
+                        elevation: 1,
+                        marginLeft: 5,
+                        marginRight: 5,
+                        marginTop: 10}},
+                      {image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', 
+                      name: 'DRAGON', element: 'WATER',
+                      styles :{ borderWidth: 1,
+                        borderRadius: 2,
+                        backgroundColor: "#00A8C2",
+                        borderColor: "#ddd",
+                        elevation: 1,
+                        marginLeft: 5,
+                        marginRight: 5,
+                        marginTop: 10}}]  
 
     return (
       <View style={conatinerMain}>
+        <ScrollView>
         {
           dataChar.map((char,idx) => 
-            <View style={containerStyle}>
+            <View style={char.styles}>
               <View style={cardSection}>
                 <View style={boxImage}>
                   <Image style={imageStyle} source={{uri: char.image}}/>
                 </View>
                 
                 <View style={boxContent}>
-                  <Text>{char.name}</Text>
-                  <Text>Element: {char.element}</Text>
+                  <Text style={charTextStyle}>{char.name}</Text>
+                  <Text style={charTextStyle}>Element: {char.element}</Text>
                 </View>
               </View>
             
-              <View>
-                <ButtonComp fn={() => this.selectCharacter("datacharacter")} title='SELECT CHARACTER'/>
+              <View style={boxButton}>
+                <ButtonComp 
+                  fn={() => this.selectCharacter("datacharacter")} 
+                  title='SELECT CHARACTER'
+                  style={buttonStyle}
+                  styleText={buttonText}/>
               </View> 
             </View> 
           )
         }
+        </ScrollView>
       </View>
     )
   }
@@ -53,7 +80,8 @@ class CharOptions extends Component {
 const styles = {
   conatinerMain: {
     flex: 1,
-    backgroundColor: "#FFF"
+    paddingTop: 20,
+    backgroundColor: '#72A2C0',
   },
   containerStyle: {
     borderWidth: 1,
@@ -82,8 +110,27 @@ const styles = {
     width: 80,
     height:80
   },
-  boxContent: {
-   
+  boxContent: {},
+  charTextStyle: {
+    color: "#F0F2FC"
+  },
+  boxButton: {  
+    alignItems: "center",
+    marginBottom: 10
+  },
+  buttonStyle: {
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderRadius: 7,
+    height: 40,
+    width: 200,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18
   }
 }
 

@@ -21,7 +21,7 @@ class Register extends Component {
     super(props)
 
     this.state = {
-      messageConsole: 's'
+      messageConsole: ''
     }
   }
 

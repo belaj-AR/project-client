@@ -44,7 +44,7 @@ const MyApp = createBottomTabNavigator ({
   }
 },
  {
-   initialRouteName: "Waiting Game"
+   initialRouteName: "Select Monster"
  }
 )
 

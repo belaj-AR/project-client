@@ -31,6 +31,7 @@ class LoadingPreGame extends Component {
              cardContainer,
              userStyle,
              userAvatar,
+             userTextStyle,
              BoxButtonPlayGame,
              buttonTextPlayGameStyle} = styles
 
@@ -51,9 +52,9 @@ class LoadingPreGame extends Component {
                 </View>
 
                 <View>
-                  <Text>{user.name}</Text>
-                  <Text>{'WIN  : ' + user.win}</Text>
-                  <Text>{'LOSE : ' + user.lose}</Text>
+                  <Text style={userTextStyle}>{user.name}</Text>
+                  <Text style={userTextStyle}>{'WIN  : ' + user.win}</Text>
+                  <Text style={userTextStyle}>{'LOSE : ' + user.lose}</Text>
                 </View>
               </View>
             </View>
@@ -65,7 +66,7 @@ class LoadingPreGame extends Component {
             style={BoxButtonPlayGame} 
             styleText={buttonTextPlayGameStyle} 
             fn={() => this.playGame()} 
-            title='Play Game'/>
+            title='START GAME'/>
         </View>
         
       </View>
@@ -106,6 +107,9 @@ const styles = {
   userAvatar: {
     width: 70,
     height: 70
+  },
+  userTextStyle: {
+    color: "#BCDAFB"
   },
   BoxButtonPlayGame: {
     elevation: 2,
