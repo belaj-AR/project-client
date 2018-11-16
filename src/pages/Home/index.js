@@ -1,13 +1,29 @@
 import React, {Component} from 'react'
-import {View, Text, Alert, ScrollView, TouchableOpacity} from 'react-native'
+import {View, Text, Alert, ScrollView, TouchableOpacity, AsyncStorage} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
 import ButtonComp from '../../components/Button'
 
+import logout from '../../actions/logout'
+
 class HomePage extends Component {
 
+  constructor(props) {
+    super(props)
+  }
+
+  async logoutUser () {
+    let { logout } = this.props
+
+    logout()
+    await AsyncStorage.removeItem('token')
+    this.props.navigation.navigate('Login')
+  }
+
   render() {
+    
+    const { token, logout } = this.props
 
     const {
       containerStyle,
@@ -69,7 +85,7 @@ class HomePage extends Component {
                   </Text>
                 </View>
               </View>
-              <View style={{flex: .9, alignSelf: 'stretch'}}>
+              <View style={{flex: .8, alignSelf: 'stretch'}}>
                 <View style={{
                   flex: 1,
                   borderWidth: 0.2,
@@ -78,6 +94,9 @@ class HomePage extends Component {
                   marginTop: 20,
                 }}>
                 </View>
+                  <Text>
+                    { token }
+                  </Text>
               </View>
               <View style={{flex: .1}}>
                 <ButtonComp
@@ -85,6 +104,13 @@ class HomePage extends Component {
                   styleText={buttonTextHistoryStyle}
                   fn={() => {}}
                   title="History Battle"/>
+              </View>
+              <View style={{flex: .1}}>
+                <ButtonComp
+                  style={BoxButtonHistory}
+                  styleText={buttonTextHistoryStyle}
+                  fn={() => {this.logoutUser()}}
+                  title="log out"/>
               </View>
             </View>
             <ActionArea/>
@@ -154,13 +180,13 @@ const styles = {
 
 const setStateToProps = (state) => {
   return ({
-
+    token: state.token.token
   })
 }
 
 const setDispatchToProps = (dispatch) => {
   return({
-
+    logout: () => dispatch(logout())
   })
 }
 
