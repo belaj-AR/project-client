@@ -16,8 +16,6 @@ const { firebaseAuth, ngrokTunnel } = config
 
 class Login extends Component {
 
-  componentDidMount = () => {}
-
   changeValue = (key, val) => {
     let dataUser = {
       [key] : val
