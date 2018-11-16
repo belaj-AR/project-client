@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Text, Alert, ScrollView} from 'react-native'
+import {View, Text, Alert, ScrollView, AsyncStorage} from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 
@@ -8,6 +8,7 @@ import ButtonComp from '../../components/Button'
 
 import setStateLogin from '../../actions/setStateLogin'
 import actionLogin from '../../actions/login'
+import setToken from '../../actions/setToken'
 
 import config from '../../../config'
 import AlertCatcher from './src/alertCatcher'
@@ -40,8 +41,10 @@ class Login extends Component {
           }
         })
       })
-      .then(({ data: { token } }) => {
+      .then( async ({ data: { token } }) => {
         // save token to asycnStorage
+        await AsyncStorage.setItem('token', token)
+        this.props.setToken(token)
         this.props.navigation.navigate('Home')
       })
       .catch(({ code }) => {
@@ -221,7 +224,8 @@ const setStateToProps = (state) => {
 const setDispatchToProps = (dispatch) => {
   return({
     setStateLogin: (dataUser) => dispatch(setStateLogin(dataUser)),
-    actionLogin: (dataUser) => dispatch(actionLogin(dataUser))
+    actionLogin: (dataUser) => dispatch(actionLogin(dataUser)),
+    setToken: (token) => dispatch(setToken(token))
   })
 }
 
