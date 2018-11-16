@@ -17,15 +17,6 @@ const { firebaseAuth, ngrokTunnel } = config
 
 class Register extends Component {
 
-  constructor(props) {
-
-    super(props)
-
-    this.state = {
-      messageConsole: ''
-    }
-  }
-
   changeValue = (key, val) => {
     let dataUser = {
       [key] : val
@@ -217,11 +208,6 @@ class Register extends Component {
                   title="Submit"/>
               </View>
             <View style={paddingOuterContent}>
-              <ScrollView>
-                <Text>
-                  { this.state.messageConsole }
-                </Text>
-              </ScrollView>
             </View>
           </View>
           <View style={paddingOuter}>

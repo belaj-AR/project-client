@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text, Alert, ScrollView} from 'react-native'
+import axios from 'axios'
 import { connect } from 'react-redux'
 
 import Input from '../../components/Input'
@@ -15,16 +16,6 @@ const { firebaseAuth, ngrokTunnel } = config
 
 class Login extends Component {
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      errorMessage: 'console'
-    }
-  }
-
-  componentDidMount = () => {}
-
   changeValue = (key, val) => {
     let dataUser = {
       [key] : val
@@ -38,8 +29,20 @@ class Login extends Component {
     let { email, password } = this.props
 
     firebaseAuth.signInWithEmailAndPassword(email, password)
-      .then(({ user }) => {
-        this.setState({errorMessage: JSON.stringify(user.uid) })
+      .then(({ user: { uid } }) => {
+
+        return axios({
+          url: `${ngrokTunnel}/users/login`,
+          method: 'post',
+          data: {
+            email,
+            uid
+          }
+        })
+      })
+      .then(({ data: { token } }) => {
+        // save token to asycnStorage
+        this.props.navigation.navigate('Home')
       })
       .catch(({ code }) => {
         return AlertCatcher(code)
@@ -135,11 +138,6 @@ class Login extends Component {
             </View>
           </View>
           <View style={paddingOuterContent}>
-            <ScrollView>
-              <Text>
-                { this.state.errorMessage }
-              </Text>
-            </ScrollView>
           </View>
         </View>
         <View style={paddingOuter}>
