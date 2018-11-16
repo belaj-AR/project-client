@@ -22,6 +22,7 @@ import Config from './config';
 
 import Login from './src/pages/Login'
 import Register from './src/pages/Register'
+import Lobby from './src/pages/Lobby'
 import CharOption from './src/pages/CharOptions'
 import LoadingPreGame from './src/pages/LoadingPreGame'
 import Game from './src/pages/Game'
@@ -33,6 +34,9 @@ const MyApp = createBottomTabNavigator ({
   },
   "Register": {
     screen: Register
+  },
+  "Lobby": {
+    screen: Lobby
   },
   "Select Monster": {
     screen: CharOption
