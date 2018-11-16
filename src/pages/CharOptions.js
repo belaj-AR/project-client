@@ -12,7 +12,7 @@ class CharOptions extends Component {
   }
 
   componentDidMount = () => {
-    this.props.addItem()
+    // this.props.addItem()
   }
 
   render() {
