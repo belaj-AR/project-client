@@ -21,6 +21,10 @@ class LoadingPreGame extends Component {
     }
   }
 
+  componentDidMount = () => {
+    // const hero = this.props.navigation.getParam('hero')
+  }
+
   playGame = () => {
     this.props.navigation.navigate('Game')
   }

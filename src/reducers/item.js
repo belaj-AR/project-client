@@ -9,7 +9,7 @@ const itemReducer = (state = defaultState, action) => {
         case 'ADD_ITEM_SUCCESS':
             return {
                 ...state,
-                item: state.items.concat(action.payload),
+                items: action.payload,
                 loading: false,
                 error: false
             }

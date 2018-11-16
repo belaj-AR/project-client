@@ -1,15 +1,23 @@
 import React, { Component } from 'react'
 import {View, Text, Image, ScrollView} from 'react-native'
+import {connect} from 'react-redux'
 
+import addItem from '../actions/addItem'
 import ButtonComp from '../components/Button'
 
 class CharOptions extends Component {
 
-  selectCharacter = (data) => {
-    alert(data)
+  characterSelected = (hero) => {
+    this.props.navigation.navigate('Loading Before Game', { hero })
+  }
+
+  componentDidMount = () => {
+    this.props.addItem()
   }
 
   render() {
+
+    const { heroes } = this.props
 
     const { conatinerMain,
             containerStyle, 
@@ -20,7 +28,8 @@ class CharOptions extends Component {
             charTextStyle,
             boxButton,
             buttonStyle,
-            buttonText } = styles
+            buttonText,
+            elementWater } = styles
 
     const dataChar = [{image: 'https://d1a9v60rjx2a4v.cloudfront.net/2016/12/30/11_02_30_448_Fantasy_Monster_Dragon_01_1.jpg', 
                       name: 'DRAGON', element: 'FIRE', 
@@ -47,11 +56,11 @@ class CharOptions extends Component {
       <View style={conatinerMain}>
         <ScrollView>
         {
-          dataChar.map((char,idx) => 
-            <View style={char.styles}>
+          heroes.map((char,idx) => 
+            <View style={elementWater}>
               <View style={cardSection}>
                 <View style={boxImage}>
-                  <Image style={imageStyle} source={{uri: char.image}}/>
+                  {/* <Image style={imageStyle} source={{uri: char.image}}/> */}
                 </View>
                 
                 <View style={boxContent}>
@@ -62,7 +71,7 @@ class CharOptions extends Component {
             
               <View style={boxButton}>
                 <ButtonComp 
-                  fn={() => this.selectCharacter("datacharacter")} 
+                  fn={() => this.characterSelected(char)} 
                   title='SELECT CHARACTER'
                   style={buttonStyle}
                   styleText={buttonText}/>
@@ -71,6 +80,7 @@ class CharOptions extends Component {
           )
         }
         </ScrollView>
+        
       </View>
     )
   }
@@ -131,7 +141,29 @@ const styles = {
   buttonText: {
     color: "#fff",
     fontSize: 18
+  },
+  elementWater: {
+    borderWidth: 1,
+    borderRadius: 2,
+    backgroundColor: "#00A8C2",
+    borderColor: "#ddd",
+    elevation: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10
   }
 }
 
-export default CharOptions
+const setStateToProps = (state) => {
+  return ({
+    heroes: state.itemReducer.items
+  })
+}
+
+const setDispatchToProps = (dispatch) => {
+  return ({
+    addItem: () => dispatch(addItem())
+  })
+}
+
+export default connect(setStateToProps, setDispatchToProps)(CharOptions)
