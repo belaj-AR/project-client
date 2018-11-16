@@ -19,23 +19,24 @@ import {
 
 export default class ArenaGame extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     // Set initial state here
     this.state = {
-      text : "Initializing AR..."
+      text : "preparing arena.."
     };
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
+    this._onLoadEnd = this._onLoadEnd.bind(this);
   }
 
 
   render() {
     return (
-      <ViroARScene onTrackingUpdated={this._onInitialized} >
-        <ViroARPlaneSelector></ViroARPlaneSelector>
+      <ViroARScene onTrackingUpdated={this._onInitialized}>
+       
         
         <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
         
@@ -45,15 +46,37 @@ export default class ArenaGame extends Component {
         
         <ViroAmbientLight color={"#aaaaaa"} />
         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
-          position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
-          <Viro3DObject
+          position={[0, 3, -5]} color="#ffffff" castsShadow={true} />
+          {/* <Viro3DObject
             source={require('./res/emoji_smile/emoji_smile.vrx')}
             resources={[require('./res/emoji_smile/emoji_smile_diffuse.png'),
                 require('./res/emoji_smile/emoji_smile_normal.png'),
                 require('./res/emoji_smile/emoji_smile_specular.png')]}
             position={[-.5, .5, -1]}
             scale={[.2, .2, .2]}
-            type="VRX" />
+            type="VRX" /> */}
+
+            {/* TODO UPDATE MODELS BASED ON USER'S PICK */}
+            <Viro3DObject
+            source={require('./res/emoji_smile/emoji_smile.vrx')}
+            position={[-1, 0, -5]}
+            animation={{name: "rotatePlayerOne", run: true, loop: true}}
+            scale={[0.8, 0.8, 0.8]}
+            
+            type="VRX"
+            dragType="FixedDistance" onDrag={()=>{}}
+          />
+
+          {/* TODO UPDATE MODELS BASED ON USER'S PICK */}
+          <Viro3DObject
+            source={require('./res/emoji_smile/emoji_smile.vrx')}
+            position={[1, 0, -1]}
+            scale={[0.8, 0.8, 0.8]}
+            animation={{name: "rotatePLayerTwo", run: true, loop: false}}
+            onLoadEnd={this._onLoadEnd}
+            type="VRX"
+            dragType="FixedDistance" onDrag={()=>{}}
+          />
        
  
       </ViroARScene>
@@ -63,12 +86,27 @@ export default class ArenaGame extends Component {
   _onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        text : "Hello World!"
+        text : "Summoning dragons.."
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
   }
+
+  _onLoadEnd() {
+    this.setState({
+      text : "FIGHT"
+    });
+    setTimeout(() => {
+      
+      this.setState({
+        text : "player x wins"
+      });
+      
+      //navigate push to win page
+    }, 10000);
+ }
+
 }
 
 var styles = StyleSheet.create({
@@ -88,12 +126,21 @@ ViroMaterials.createMaterials({
 });
 
 ViroAnimations.registerAnimations({
-  rotate: {
+  rotatePLayerOne: {
     properties: {
-      rotateY: "+=90"
+      rotateY: "+90"
     },
     duration: 250, //.25 seconds
-  },
+  }
+});
+
+ViroAnimations.registerAnimations({
+  rotatePLayerTwo: {
+    properties: {
+      rotateY: "-180"
+    },
+    duration: 250, //.25 seconds
+  }
 });
 
 module.exports = ArenaGame;
