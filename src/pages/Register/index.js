@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, Alert, ScrollView} from 'react-native'
+import {View, Text, ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -8,7 +8,8 @@ import actionRegister from '../../actions/register'
 
 import Input from '../../components/Input'
 import ButtonComp from '../../components/Button'
-import validatorInput from './fn/validatorInput'
+import validatorInput from './src/validatorInput'
+import Alert from '../../components/Alert'
 
 import config from '../../../config'
 
@@ -29,7 +30,6 @@ class Register extends Component {
     let dataUser = {
       [key] : val
     }
-
     this.props.setStateRegister(dataUser)
   }
 
@@ -66,27 +66,20 @@ class Register extends Component {
       })
       .then(data => {
         this.setState({messageConsole: JSON.stringify(data) })
-
-        Alert.alert(
-        'Notification',
-        'Creating an account success!',
-        [
+        Alert('Notification', 'Creating an account success!', [
           {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
-        ],
-        { cancelable: false }
-        )
+        ])
       })
       .catch(err => {
-        this.setState({messageConsole: JSON.stringify(err) })
-
-        Alert.alert(
-        'Notification',
-        `Creating an account failed! ${err.message}`,
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ],
-        { cancelable: false }
-        )
+        if (err.message) {
+          Alert('Notification', `Creating an account failed! ${err.message}`, [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ])
+        } else {
+          Alert('Notification', `Creating an account failed! ${err}`, [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ])
+        }
       })
   }
 
