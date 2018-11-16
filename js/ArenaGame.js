@@ -44,6 +44,7 @@ export default class ArenaGame extends Component {
          <ViroBox position={[0, -.5, -1]} scale={[.3, .3, .1]} materials={["grid"]} animation={{name: "rotate", run: true, loop: true}}/>
         </ViroNode>
         
+        
         <ViroAmbientLight color={"#aaaaaa"} />
         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
           position={[0, 3, -5]} color="#ffffff" castsShadow={true} />

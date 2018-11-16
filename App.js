@@ -36,7 +36,7 @@ const MyApp = createBottomTabNavigator ({
   "Select Monster": {
     screen: CharOption
   },
-  "Waiting Game": {
+  "Loading Before Game": {
     screen: LoadingPreGame
   },
   "Game": {
