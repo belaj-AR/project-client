@@ -25,6 +25,7 @@ import Register from './src/pages/Register'
 import CharOption from './src/pages/CharOptions'
 import LoadingPreGame from './src/pages/LoadingPreGame'
 import Game from './src/pages/Game'
+import Home from './src/pages/Home'
 
 const MyApp = createBottomTabNavigator ({
   "Login": {
@@ -41,10 +42,13 @@ const MyApp = createBottomTabNavigator ({
   },
   "Game": {
     screen: Game
+  },
+  "Home": {
+    screen: Home
   }
 },
  {
-   initialRouteName: "Select Monster"
+   initialRouteName: "Home"
  }
 )
 
