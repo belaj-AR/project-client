@@ -1,114 +1,156 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity} from 'react-native'
+
+import ActionArea from '../../components/ActionArea'
 import ButtonComp from '../../components/Button'
+import Modal from '../../components/Modal'
 
 class Lobby extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state={
+      modalVisible: false
+    }
+  }
   
+  changeModalVisible = () => {
+    this.setState({
+      modalVisible: !this.state.modalVisible
+    })
+  }
+
   joinRoom = () => {
-    alert('hello')
+    Alert('Notification', 'Creating an account success!', [
+      {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+    ])
   }
 
   render() {
 
-    const { containerStyle, 
-            boxCreate, 
-            butttonCreateStyle, 
-            buttonTextCreateStyle, 
-            boxRoom,
-            boxTitleStyle,
-            titleStyle,
-            buttonRoomStyle,
-            buttonRoomTextStyle } = styles
+    const {
+      containerStyle,
+      paddingOuter,
+      paddingInner,
+      contentArea,
+      contentProfile,
+      cardList,
+      BoxButtonRegister,
+      buttonTextRegisterStyle
+    } = styles
 
     return (
       <View style={containerStyle}>
-        
-        <View style={boxCreate}>
-          <ButtonComp 
-            style={butttonCreateStyle}
-            styleText={buttonTextCreateStyle}
-            title='CREATE ROOM'
-            fn={() => {}}/>
+        <View style={paddingOuter}>
         </View>
-
-        <View style={boxRoom}>
-          <View style={boxTitleStyle}>
-            <Text style={titleStyle}>JOIN ROOM</Text>
+        <View style={{
+          flex: 1,
+          flexDirection: 'column'
+        }}>
+          <View style={paddingInner}>
           </View>
+          <View style={{
+            flex: 0.07,
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}>
+            <ButtonComp
+              style={BoxButtonRegister}
+              styleText={buttonTextRegisterStyle}
+              fn={() => this.changeModalVisible()}
+              title="Create room"/>
+          </View>
+          <View style={contentArea}>
+            <View style={contentProfile}>
+              <View style={cardList}>
 
-          <ScrollView>
-            <ButtonComp 
-              style={buttonRoomStyle} 
-              styleText={buttonRoomTextStyle} 
-              title='Room: Cmon War'
-              fn={() => this.joinRoom()}/>
-          </ScrollView>
-
+              </View>
+            </View>
+            <ActionArea fn={this.props.navigation.navigate}/>
+          </View>
+          <Modal
+            data={{
+              changeModalVisible: this.changeModalVisible,
+              modalVisible : this.state.modalVisible,
+              msgTitle: 'Notification Create', 
+              msgSuccess: 'Room created', 
+              msgFailed: 'Creating room failed',
+              fnSuccess: this.props.navigation.navigate('Home'),
+              fnFailed: this.props.navigation.navigate('Lobby')
+            }}
+          >
+          </Modal>
+          <View style={paddingInner}>
+          </View>
         </View>
-
-       
-
+        <View style={paddingOuter}>
+        </View>
       </View>
     )
   }
-
 }
 
 const styles = {
   containerStyle: {
     flex: 1,
     backgroundColor: '#72A2C0',
-    paddingTop: 20
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
-  boxCreate: {
-    marginLeft: 10,
-    marginRight: 10
+  paddingOuter: {
+    flex:0.1,
   },
-  butttonCreateStyle: {
+  paddingInner: {
+    flex:0.03,
+  },
+  contentArea: {
+    flex: 1
+  },
+  headerProfile: {
+    flex: .08,
+    borderRadius: 10,
+    backgroundColor: '#fff'
+  },
+  contentProfile: {
+    flex: .9,
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  cardList: {
+    alignSelf: 'stretch',
     elevation: 2,
-    marginTop: 5,
+    padding: 8,
+    borderRadius: 10,
+    height: 80,
+    backgroundColor: 'white',
+    borderColor: 'red'
+  },
+  actionArea: {
+    marginTop: 20,
+    flex: .8,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    flexDirection: 'row'
+  },
+  BoxButtonRegister: {
+    elevation: 2,
+    padding: 5,
     borderRadius: 7,
     backgroundColor: '#192E5B',
-    height: 40,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonTextCreateStyle: {
+  buttonTextRegisterStyle: {
     fontSize: 15,
     fontWeight: '500',
     color: '#BCDAFB'
   },
-  boxRoom: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 10,
-    borderRadius: 7,
-    height: 500,
-    backgroundColor: '#192E5B'
-  },
-  boxTitleStyle: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10
-  },
-  titleStyle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#BCDAFB',
-  },
-  buttonRoomStyle: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    borderRadius: 7,
-    padding: 10,
-    backgroundColor: '#72A2C0'
-  },
-  buttonRoomTextStyle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#192E5B'
-  }
 }
 
 export default Lobby
