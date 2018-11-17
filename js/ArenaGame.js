@@ -7,21 +7,16 @@ import {
   ViroARScene,
   ViroText,
   ViroConstants,
-  ViroBox,
   ViroMaterials,
   Viro3DObject,
   ViroAmbientLight,
   ViroSpotLight,
-  ViroARPlaneSelector,
   ViroNode,
   ViroAnimations,
-  ViroSceneNavigator,
-  ViroScene,
-  Viro360Video,
   Viro360Image,
-  ViroUtils,
   ViroPortal,
   ViroPortalScene,
+  ViroParticleEmitter
 } from 'react-viro';
 
 export default class ArenaGame extends Component {
@@ -45,23 +40,8 @@ export default class ArenaGame extends Component {
   render() {
     return (
       <ViroARScene onTrackingUpdated={this._onInitialized}>
-       
-         
-        {/* <ViroNode position={[0,-1,0]} dragType="FixedToWorld" onDrag={()=>{}} >
-         <ViroBox position={[0, -.5, -1]} scale={[.3, .3, .1]} materials={["grid"]} animation={{name: "rotate", run: true, loop: true}}/>
-        </ViroNode> */}
-
-        
-        
+      
         <ViroAmbientLight color={"#aaaaaa"} />
-
-        
-        {/* <ViroAmbientLight color={"#aaaaaa"} /> 
- 
-        <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
-          position={[0, 3, -5]} color="#ffffff" castsShadow={true} />  */}
-          
-
             
           <ViroText text={this.state.welcomeText} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
 
@@ -79,26 +59,42 @@ export default class ArenaGame extends Component {
             
             <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
 
-
-            {this.state.summonDragons && 
-             
-                <ViroAmbientLight color="#ffffff" intensity={200}>
-                  <Viro3DObject
-                  source={require('./res/emoji_smile/emoji_smile.vrx')}
-                  position={[-1, 0, -8]}
-                  animation={{name: "rotatePlayerOne", run: true, loop: true}}
-                  scale={[0.8, 0.8, 0.8]}
-                  
-                  type="VRX"
-                  dragType="FixedDistance" onDrag={()=>{}}
-                /> 
-              </ViroAmbientLight>
-              
-           
-             }
+            <Viro3DObject
+              source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+              resources={[require('./res/heroes/redDragon/color-map-dents.png'),
+                          require('./res/heroes/redDragon/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/color_map1.jpg'),
+                          require('./res/heroes/redDragon/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/normal_map.png'),
+                          require('./res/heroes/redDragon/specmap.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
+              position={[1, 0, -7]}
+              scale={[0.8, 0.8, 0.8]}
+              animation={{name: "rotatePLayerOne", run: true, loop: false}}
+              onLoadEnd={this._onLoadEnd}
+              type="VRX"
+              dragType="FixedDistance" onDrag={()=>{}}
+            />
 
              <Viro3DObject
-              source={require('./res/emoji_smile/emoji_smile.vrx')}
+              source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+              resources={[require('./res/heroes/redDragon/color-map-dents.png'),
+                          require('./res/heroes/redDragon/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/color_map1.jpg'),
+                          require('./res/heroes/redDragon/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/normal_map.png'),
+                          require('./res/heroes/redDragon/specmap.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
               position={[1, 0, -7]}
               scale={[0.8, 0.8, 0.8]}
               animation={{name: "rotatePLayerTwo", run: true, loop: false}}
@@ -107,25 +103,53 @@ export default class ArenaGame extends Component {
               dragType="FixedDistance" onDrag={()=>{}}
               />
 
+            {/* Start Particle */}
+            <ViroNode position={[1, 0, -7]} scale={[1.5, 1.5, 1.5]}>
+                <ViroParticleEmitter
+                duration={1200}
+                visible={true}
+                run={true}
+                loop={true}
+                fixedToEmitter={false}
 
-            
+                image={{
+                  source:require("./res/particles/particle_fire.png"),
+                  height:0.3,
+                  width:0.3,
+                  bloomThreshold:0.0
+                }}
 
+                spawnBehavior={{
+                  particleLifetime:[500,500],
+                  emissionRatePerSecond:[30, 40],
+                  maxParticles:800
+                }}
 
+                particleAppearance={{
+                  opacity:{
+                    initialRange:[0.2, 0.2],
+                    factor:"time",
+                    interpolation:[
+                      {endValue:0.2, interval:[0,200]},
+                      {endValue:0.0, interval:[200,500]},
+                    ]
+                  },
+                  scale:{
+                    initialRange:[[1,1,1], [1,1,1]],
+                    factor:"time",
+                    interpolation:[
+                      {endValue:[0,0,0], interval:[150,500]},
+                    ]
+                  },
 
-            <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}}>
-              <ViroPortal position={[0, 0, -9]} scale={[.1, .1, .1]}>
-                <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
-                  resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
-                              require('./res/portal_res/portal_ship/portal_ship_normal.png'),
-                              require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
-                  type="VRX"/>
-              </ViroPortal>
-            <Viro360Image source={require("./res/portal_res/360_island.jpg")} />
+                }}
 
-
-            
-        </ViroPortalScene>
-
+                particlePhysics={{
+                  velocity:{initialRange:[[0,.3,0], [0,.5,0]]}
+                }}
+                />
+            </ViroNode>
+            {/* End Particle */}
 
         </ViroPortalScene>
        
@@ -186,11 +210,6 @@ var styles = StyleSheet.create({
   },
 });
 
-ViroMaterials.createMaterials({
-  grid: {
-    diffuseTexture: require('./res/grid_bg.jpg'),
-  },
-});
 
 ViroAnimations.registerAnimations({
   rotatePLayerOne: {
@@ -211,3 +230,14 @@ ViroAnimations.registerAnimations({
 });
 
 module.exports = ArenaGame;
+
+{/* <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}}>
+  <ViroPortal position={[0, 0, -9]} scale={[.1, .1, .1]}>
+    <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
+      resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
+                  require('./res/portal_res/portal_ship/portal_ship_normal.png'),
+                  require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
+      type="VRX"/>
+    </ViroPortal>
+  <Viro360Image source={require("./res/portal_res/360_island.jpg")} /> 
+</ViroPortalScene> */}
