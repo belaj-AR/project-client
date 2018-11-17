@@ -16,7 +16,8 @@ import {
   Viro360Image,
   ViroPortal,
   ViroPortalScene,
-  ViroParticleEmitter
+  ViroParticleEmitter,
+  ViroSpatialSound
 } from 'react-viro';
 
 export default class ArenaGame extends Component {
@@ -47,7 +48,7 @@ export default class ArenaGame extends Component {
 
           <ViroAmbientLight color="#ffffff" intensity={200}/>
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, -3]} scale={[.1, .1, .1]}>
+            <ViroPortal position={[0, -1, -3]} scale={[.4, .4, .4]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
@@ -102,6 +103,18 @@ export default class ArenaGame extends Component {
               onLoadEnd={this._onLoadEnd}
               type="VRX"
               />
+              <ViroSpatialSound
+                  rolloffModel="linear"
+                  paused={false}
+                  muted={false}
+                  minDistance={3}
+                  maxDistance={5}
+                  position={[1, 0, -7]}
+                  source={require('../js/res/sounds/arena/dragons/roar1.wav')}
+                  loop={true}
+                  volume={1.0}
+                  onFinish={this.onFinishSpatial}
+                  onError={this.onErrorSpatial}/>
 
             {/* Start Particle */}
             <ViroNode position={[1, 0, -7]} scale={[1, 1, 1]}>
