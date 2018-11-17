@@ -14,27 +14,35 @@ import {
 
 class Game extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       sharedProps : sharedProps,
-      viroAppProps: false
+      initAr: false
     }
 
-    this._getARNavigator = this._getARNavigator.bind();
+  }
+
+  myNavigation = () => {
+    return this.props.navigation.navigate("LoadingPreGame")
   }
 
   render(){
-    let { viroAppProps } = this.state
-    return this._getARNavigator(viroAppProps);
-  }
-
-  _getARNavigator(viroAppProps) {
-    return (
-      <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
-        initialScene={{scene: ArenaGame}} viroAppProps={viroAppProps}/> 
-    );
+    
+    if(this.state.initAr){
+      return (
+        <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
+          initialScene={{scene: ArenaGame}} customNavigation={this.myNavigation}/> 
+      );
+    } else {
+      return (
+        <View>
+          <Text>{JSON.stringify(this.props.navigation.navigate)}</Text>
+        </View>
+      )
+    }
+   
   }
 
 }

@@ -13,21 +13,19 @@ import ButtonComp from '../components/Button'
 
 class LoadingPreGame extends Component {
 
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
 
     this.state = {
       sharedProps : sharedProps
     }
   }
 
-  componentDidMount = () => {
-    // const hero = this.props.navigation.getParam('hero')
-  }
-
   playGame = () => {
+    // alert(JSON.stringify( this.props.navigation))
     this.props.navigation.navigate('Game')
   }
+
 
   render(){
 
