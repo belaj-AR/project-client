@@ -60,29 +60,10 @@ export default class ArenaGame extends Component {
             
             <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
 
-            {/* <Viro3DObject
-              source={require('./res/heroes/redDragon/orange-dragon.vrx')}
-              resources={[require('./res/heroes/redDragon/color-map-dents.png'),
-                          require('./res/heroes/redDragon/color-map-eye.jpg'),
-                          require('./res/heroes/redDragon/color_map1.jpg'),
-                          require('./res/heroes/redDragon/normal-map-dents.png'),
-                          require('./res/heroes/redDragon/normal_map.png'),
-                          require('./res/heroes/redDragon/specmap.jpg'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                          require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-              position={[1, 0, -7]}
-              scale={[0.8, 0.8, 0.8]}
-              animation={{name: "rotatePLayerOne", run: true, loop: false}}
-              onLoadEnd={this._onLoadEnd}
-              type="VRX"
-              dragType="FixedDistance" onDrag={()=>{}}
-            /> */}
+         
 
-            <ViroNode position={[1, 0, -7]} scale={[0.8, 0.8, 0.8]}>
+
+           <ViroNode position={[-4, 0, -10]} scale={[0.8, 0.8, 0.8]}>
              <Viro3DObject
               source={require('./res/heroes/redDragon/orange-dragon.vrx')}
               resources={[require('./res/heroes/redDragon/color-map-dents.png'),
@@ -97,9 +78,9 @@ export default class ArenaGame extends Component {
                           require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
                           require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
                           require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-              position={[1, 0, -7]}
+              position={[0, 2, 0]}
+              rotation={[0, 90, 0]}
               scale={[0.3, 0.3, 0.3]}
-              animation={{name: "rotatePLayerTwo", run: true, loop: false}}
               onLoadEnd={this._onLoadEnd}
               type="VRX"
               />
@@ -117,7 +98,7 @@ export default class ArenaGame extends Component {
                   onError={this.onErrorSpatial}/>
 
             {/* Start Particle */}
-            <ViroNode position={[1, 0, -7]} scale={[1, 1, 1]}>
+            <ViroNode position={[.2, 2, 0]} scale={[1, 1, 1]}>
                 <ViroParticleEmitter
                 duration={1200}
                 visible={true}
@@ -127,8 +108,8 @@ export default class ArenaGame extends Component {
 
                 image={{
                   source:require("./res/particles/particle_fire.png"),
-                  height:5,
-                  width:5,
+                  height:8,
+                  width:8,
                   bloomThreshold:0.0
                 }}
 
@@ -163,6 +144,93 @@ export default class ArenaGame extends Component {
                 />
             </ViroNode>
             {/* End Particle */}
+          </ViroNode>
+
+
+
+
+
+            <ViroNode position={[4, 0, -10]} scale={[0.8, 0.8, 0.8]}>
+             <Viro3DObject
+              source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+              resources={[require('./res/heroes/redDragon/color-map-dents.png'),
+                          require('./res/heroes/redDragon/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/color_map1.jpg'),
+                          require('./res/heroes/redDragon/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/normal_map.png'),
+                          require('./res/heroes/redDragon/specmap.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
+                          require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
+              position={[0, 2, 0]}
+              rotation={[0, -90, 0]}
+              scale={[0.3, 0.3, 0.3]}
+              onLoadEnd={this._onLoadEnd}
+              type="VRX"
+              />
+              <ViroSpatialSound
+                  rolloffModel="linear"
+                  paused={false}
+                  muted={false}
+                  minDistance={3}
+                  maxDistance={5}
+                  position={[1, 0, -7]}
+                  source={require('../js/res/sounds/arena/dragons/roar1.wav')}
+                  loop={true}
+                  volume={1.0}
+                  onFinish={this.onFinishSpatial}
+                  onError={this.onErrorSpatial}/>
+
+         
+            <ViroNode position={[-.2, 2, 0]} scale={[1, 1, 1]}>
+                <ViroParticleEmitter
+                duration={1200}
+                visible={true}
+                run={true}
+                loop={true}
+                fixedToEmitter={false}
+
+                image={{
+                  source:require("./res/particles/particle_fire.png"),
+                  height:8,
+                  width:8,
+                  bloomThreshold:0.0
+                }}
+
+                spawnBehavior={{
+                  particleLifetime:[500,500],
+                  emissionRatePerSecond:[30, 40],
+                  maxParticles:800
+                }}
+
+                particleAppearance={{
+                  opacity:{
+                    initialRange:[0.2, 0.2],
+                    factor:"time",
+                    interpolation:[
+                      {endValue:0.2, interval:[0,200]},
+                      {endValue:0.0, interval:[200,500]},
+                    ]
+                  },
+                  scale:{
+                    initialRange:[[1,1,1], [1,1,1]],
+                    factor:"time",
+                    interpolation:[
+                      {endValue:[0,0,0], interval:[150,500]},
+                    ]
+                  },
+
+                }}
+
+                particlePhysics={{
+                  velocity:{initialRange:[[0,.3,0], [0,.5,0]]}
+                }}
+                />
+            </ViroNode>
+           
           </ViroNode>
         </ViroPortalScene>
        
@@ -236,7 +304,7 @@ ViroAnimations.registerAnimations({
 ViroAnimations.registerAnimations({
   rotatePLayerTwo: {
     properties: {
-      rotateY: "-180"
+      rotateY: "-90"
     },
     duration: 250, //.25 seconds
   }
