@@ -26,19 +26,19 @@ const styles = {
   },
   firstText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '500',
     color: '#BCDAFB'
   },
   secondText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '500',
     color: '#BCDAFB'
   },
   thirdText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '500',
     color: '#BCDAFB'
   },
@@ -65,10 +65,13 @@ const {
   actionArea
 } = styles
 
-export default (props) => {
+export default ({ fn }) => {
   return (
     <View style={actionArea}>
       <TouchableOpacity
+        onPress={() => {
+          fn('Home')
+        }}
         style={flexTouchableArea}
       >
         <View style={firstButton}>
@@ -78,6 +81,9 @@ export default (props) => {
         </View>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={() => {
+          fn('CharOption')
+        }}
         style={flexTouchableArea}
       >
         <View style={secondButton}>
@@ -87,6 +93,9 @@ export default (props) => {
         </View>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={() => {
+          fn('Lobby')
+        }}
         style={flexTouchableArea}
       >
         <View style={thirdButton}>

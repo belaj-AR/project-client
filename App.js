@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import store from './src/store'
 import {
+  AsyncStorage,
   AppRegistry,
   Text,
   View,
@@ -10,7 +11,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-import { createBottomTabNavigator } from 'react-navigation';
+import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator } from 'react-navigation';
 
 
 import {
@@ -29,36 +30,78 @@ import Barrack from './src/pages/Barrack';
 import Game from './src/pages/Game'
 import Home from './src/pages/Home'
 
-const MyApp = createBottomTabNavigator ({
-  "Login": {
-    screen: Login
-  },
-  "Register": {
-    screen: Register
-  },
-  "Lobby": {
-    screen: Lobby
-  },
-  "Select Monster": {
-    screen: CharOption
-  },
-  "Loading Before Game": {
-    screen: LoadingPreGame
-  },
-  "Game": {
-    screen: Game
-  },
-  "Barrack": {
-    screen: Barrack
-  },
-  "Home": {
-    screen: Home
+class AuthProcess extends Component {
+  constructor(props) {
+    super(props);
+    this._bootstrapAsync();
   }
-},
- {
-   initialRouteName: "Home"
- }
-)
+
+  // Fetch the token from storage then navigate to our appropriate place
+  _bootstrapAsync = async () => {
+    const userToken = await AsyncStorage.getItem('token');
+
+    // This will switch to the App screen or Auth screen and this loading
+    // screen will be unmounted and thrown away.
+    this.props.navigation.navigate(userToken ? 'App' : 'Login');
+  };
+
+  // Render any loading content that you like here
+  render() {
+    return (
+      <View>
+      </View>
+    );
+  }
+}
+
+const AppStack = createTabNavigator({
+  Home: Home,
+  Lobby: Lobby,
+  Game: Game,
+  LoadingPreGame: LoadingPreGame,
+  CharOption: CharOption
+})
+
+const LoginStack = createStackNavigator({
+  Login: Login,
+  Register: Register
+})
+
+const RouteAuth = createNavigationContainer(SwitchNavigator({
+  AuthProcess: AuthProcess,
+  App: AppStack,
+  Login: LoginStack
+}, {
+  initialRouteName: 'AuthProcess'
+}))
+
+// const MyApp = createBottomTabNavigator ({
+//   "Login": {
+//     screen: Login
+//   },
+//   "Register": {
+//     screen: Register
+//   },
+//   "Lobby": {
+//     screen: Lobby
+//   },
+//   "Select Monster": {
+//     screen: CharOption
+//   },
+//   "Loading Before Game": {
+//     screen: LoadingPreGame
+//   },
+//   "Game": {
+//     screen: Game
+//   },
+//   "Home": {
+//     screen: Home
+//   }
+// },
+//  {
+//    initialRouteName: "Home"
+//  }
+// )
 
 /*
  TODO: Insert your API key below
@@ -100,7 +143,7 @@ export default class ViroSample extends Component {
 
     return (
       <Provider store={store} style={styles.Container}>
-        <MyApp/>
+        <RouteAuth/>
       </Provider>
     )
 
