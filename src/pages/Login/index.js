@@ -17,6 +17,26 @@ const { firebaseAuth, ngrokTunnel } = config
 
 class Login extends Component {
 
+  constructor(props) {
+    super(props)
+
+    // this.state={
+    //   token: null
+    // }
+  }
+
+  // componentDidMount = async () => {
+
+  //   let token = await AsyncStorage.getItem('token')
+
+  //   if (token) {
+  //     this.props.navigation.navigate('Home')
+  //     this.setState({
+  //       token: token
+  //     })
+  //   }
+  // }
+
   changeValue = (key, val) => {
     let dataUser = {
       [key] : val
@@ -45,7 +65,7 @@ class Login extends Component {
         // save token to asycnStorage
         await AsyncStorage.setItem('token', token)
         this.props.setToken(token)
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate('App')
       })
       .catch(({ code }) => {
         return AlertCatcher(code)
@@ -135,12 +155,17 @@ class Login extends Component {
                 <ButtonComp
                   style={BoxButtonRegister}
                   styleText={buttonTextRegisterStyle}
-                  fn={() => this.actionLogin()}
+                  fn={() => this.props.navigation.navigate('Register')}
                   title="Register"/>
               </View>
             </View>
           </View>
           <View style={paddingOuterContent}>
+            {/* <ScrollView>
+              <Text>
+                { this.state.token }
+              </Text>
+            </ScrollView> */}
           </View>
         </View>
         <View style={paddingOuter}>
@@ -217,7 +242,8 @@ const styles = {
 const setStateToProps = (state) => {
   return ({
     email : state.FormInput.email,
-    password : state.FormInput.password
+    password : state.FormInput.password,
+    token: state.token.token
   })
 }
 

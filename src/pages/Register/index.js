@@ -17,6 +17,14 @@ const { firebaseAuth, ngrokTunnel } = config
 
 class Register extends Component {
 
+  // componentDidMount = async () => {
+  //   let token = await AsyncStorage.getItem('token')
+
+  //   if (token) {
+  //     this.props.navigation.navigate('Home')
+  //   }
+  // }
+
   changeValue = (key, val) => {
     let dataUser = {
       [key] : val

@@ -1,5 +1,5 @@
 let defaultState = {
-  token: ''
+  token: null
 }
 
 function token (state = defaultState, action) {

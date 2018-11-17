@@ -6,6 +6,7 @@ import ActionArea from '../../components/ActionArea'
 import ButtonComp from '../../components/Button'
 
 import logout from '../../actions/logout'
+import setToken from '../../actions/setToken'
 
 class HomePage extends Component {
 
@@ -20,10 +21,10 @@ class HomePage extends Component {
     await AsyncStorage.removeItem('token')
     this.props.navigation.navigate('Login')
   }
-
+  
   render() {
     
-    const { token, logout } = this.props
+    const { token, logout, authProcess } = this.props
 
     const {
       containerStyle,
@@ -35,7 +36,7 @@ class HomePage extends Component {
       BoxButtonHistory,
       buttonTextHistoryStyle
     } = styles
-  
+
     return (
       <View style={containerStyle}>
         <View style={paddingOuter}>
@@ -113,7 +114,7 @@ class HomePage extends Component {
                   title="log out"/>
               </View>
             </View>
-            <ActionArea/>
+            <ActionArea fn={this.props.navigation.navigate}/>
           </View>
           <View style={paddingInner}>
           </View>
@@ -186,7 +187,8 @@ const setStateToProps = (state) => {
 
 const setDispatchToProps = (dispatch) => {
   return({
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    setToken: (token) => dispatch(setToken(token))
   })
 }
 
