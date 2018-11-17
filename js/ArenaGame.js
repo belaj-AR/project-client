@@ -80,7 +80,8 @@ export default class ArenaGame extends Component {
               type="VRX"
               dragType="FixedDistance" onDrag={()=>{}}
             /> */}
-        <ViroNode position={[0, 0, -9]} scale={[.8, .8, .8]} dragType="FixedToWorld" onDrag={()=>{}}>
+
+            <ViroNode position={[1, 0, -7]} scale={[0.8, 0.8, 0.8]}>
              <Viro3DObject
               source={require('./res/heroes/redDragon/orange-dragon.vrx')}
               resources={[require('./res/heroes/redDragon/color-map-dents.png'),
@@ -95,56 +96,60 @@ export default class ArenaGame extends Component {
                           require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
                           require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
                           require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
+              position={[1, 0, -7]}
+              scale={[0.3, 0.3, 0.3]}
               animation={{name: "rotatePLayerTwo", run: true, loop: false}}
-              scale={[.5, .5, .5]}
               onLoadEnd={this._onLoadEnd}
               type="VRX"
               />
 
             {/* Start Particle */}
-            <ViroNode position={[-.6, 0, .2]} scale={[1, 1, 1]}>
-              <ViroParticleEmitter
+            <ViroNode position={[1, 0, -7]} scale={[1, 1, 1]}>
+                <ViroParticleEmitter
                 duration={1200}
                 visible={true}
                 run={true}
                 loop={true}
                 fixedToEmitter={false}
-                scale={[1, 1, 1]}
+
                 image={{
                   source:require("./res/particles/particle_fire.png"),
-                  height:0.3,
-                  width:0.3,
+                  height:5,
+                  width:5,
                   bloomThreshold:0.0
                 }}
 
-                 spawnBehavior={{
-                    particleLifetime:[500,500],
-                    emissionRatePerSecond:[200,200],
-                    maxParticles:1000,
-                    spawnVolume:{
-                      shape:"box",
-                      params:[.7, .1, .1],
-                      spawnOnSurface:false
-                    },
-                  }}
+                spawnBehavior={{
+                  particleLifetime:[500,500],
+                  emissionRatePerSecond:[30, 40],
+                  maxParticles:800
+                }}
 
                 particleAppearance={{
                   opacity:{
-                    initialRange:[0.0, 0.0],
+                    initialRange:[0.2, 0.2],
+                    factor:"time",
                     interpolation:[
-                      {endValue:0.4, interval:[0,200]},
-                      {endValue:0.0, interval:[900,1500]}
+                      {endValue:0.2, interval:[0,200]},
+                      {endValue:0.0, interval:[200,500]},
                     ]
                   },
+                  scale:{
+                    initialRange:[[1,1,1], [1,1,1]],
+                    factor:"time",
+                    interpolation:[
+                      {endValue:[0,0,0], interval:[150,500]},
+                    ]
+                  },
+
                 }}
 
                 particlePhysics={{
-                    velocity:{initialRange:[[0,.3,0], [0,.5,0]]}
-                  }}
+                  velocity:{initialRange:[[0,.3,0], [0,.5,0]]}
+                }}
                 />
             </ViroNode>
             {/* End Particle */}
-          
           </ViroNode>
         </ViroPortalScene>
        
