@@ -25,6 +25,7 @@ import Register from './src/pages/Register'
 import Lobby from './src/pages/Lobby'
 import CharOption from './src/pages/CharOptions'
 import LoadingPreGame from './src/pages/LoadingPreGame'
+import Barrack from './src/pages/Barrack';
 import Game from './src/pages/Game'
 import Home from './src/pages/Home'
 
@@ -46,6 +47,9 @@ const MyApp = createBottomTabNavigator ({
   },
   "Game": {
     screen: Game
+  },
+  "Barrack": {
+    screen: Barrack
   },
   "Home": {
     screen: Home
