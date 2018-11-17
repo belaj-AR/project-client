@@ -57,11 +57,7 @@ export default class ArenaGame extends Component {
             </ViroPortal>
             <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
 
-            
             <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
-
-         
-
 
            <ViroNode position={[-4, 0, -10]} scale={[0.8, 0.8, 0.8]}>
              <Viro3DObject
@@ -240,8 +236,9 @@ export default class ArenaGame extends Component {
   }
 
   portalOnLoad = () => {
+    // this.props.arSceneNavigator.customNavigation()
     this.setState({
-      welcomeText: "step inside"
+      welcomeText: 'Inside'
     });
   }
 
