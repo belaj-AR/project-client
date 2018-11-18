@@ -30,7 +30,8 @@ export default class ArenaGame extends Component {
       text : "preparing arena..",
       welcomeText: "Touch Diamond When You Are Ready!!!",
       summonDragons: true,
-      playerReady: false
+      playerReady: false,
+      portalSound: false
     };
 
     // bind 'this' to functions
@@ -63,8 +64,33 @@ export default class ArenaGame extends Component {
             scale={[.2, .2, .2]}
             onClick={() => this.setState({playerReady: true, welcomeText: 'Opening Portal'})}
             type="VRX" />
-          
 
+           <ViroText 
+            text={"helo helo test masuk"}
+            visible={this.state.portalSound} 
+            scale={[.5, .5, .5]} 
+            position={[0, 0, -1]} 
+            width={2} height={2}
+            textLineBreakMode="wordwrap"
+            style={styles.helloWorldTextStyle} />
+          
+          {
+            this.state.playerReady && 
+            ( 
+              <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
+                <ViroSpatialSound
+                    rolloffModel="linear"
+                    paused={this.state.portalSound}
+                    muted={this.state.portalSound}
+                    minDistance={10}
+                    maxDistance={5}
+                    source={require('../js/res/sounds/portal/air_portal.wav')}
+                    loop={true}
+                    volume={1}
+                    />
+              </ViroNode>
+            )
+          }
 
           <ViroAmbientLight color="#ffffff" intensity={200}/>
           
@@ -120,12 +146,13 @@ export default class ArenaGame extends Component {
  loadPortal = () => {
     return (
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, -1]} scale={[.7, .7, .4]}>
+            <ViroPortal position={[0, 0, -2]} scale={[.7, .7, .4]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
                             require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
-                type="VRX"/>
+                type="VRX"
+                onLoad={() => this.setState({portalSound : true})}/>
             </ViroPortal>
             <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
 
