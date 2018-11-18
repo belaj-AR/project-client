@@ -7,7 +7,7 @@ import Input from '../Input'
 import ButtonComp from '../Button'
 
 import SetValCreateInput from '../../actions/SetValCreateInput'
-
+import setRoom from '../../actions/setRoom'
 
 const styles = {
   BoxButtonRegister: {
@@ -31,20 +31,30 @@ const {
   buttonTextRegisterStyle
 } = styles
 
-export default ModalComp = ({data: { 
-  modalVisible, 
-  msgTitle, 
-  msgSuccess, 
-  msgFailed, 
-  valCreateInput, 
-  SetValCreateInput, 
-  actionModalStatus,
-  changeModalVisible,
-  fn: {
-    fnSuccess, 
-    fnFailed,
-    fnAddRoom,
-  } }}) => {
+class ModalComp extends Component {
+
+  constructor(props) {
+    super(props)
+  }
+
+  render () {
+    const {
+    valCreateInput,
+    SetValCreateInput,
+    setRoom,
+    currentUser,
+    data: { 
+      modalVisible, 
+      msgTitle, 
+      msgSuccess, 
+      msgFailed,  
+      actionModalStatus,
+      changeModalVisible,
+      fn: {
+        fnSuccess,
+        fnFailed
+      }
+    }} = this.props
 
   return (
     <View>
@@ -52,10 +62,10 @@ export default ModalComp = ({data: {
         animationType="slide"
         transparent={false}
         visible={modalVisible}>
-        {/* {
+        {
           actionModalStatus === 'success' &&
             Alert(msgTitle, msgSuccess, [
-              {text: 'OK', onPress: () => fnAddRoom(this.props.currentUser, () => {
+              {text: 'OK', onPress: () => fnAddRoom(currentUser, () => {
                 // fnSuccess(this.props.currentUser.email)
                 fnSuccess()
               })},
@@ -67,11 +77,15 @@ export default ModalComp = ({data: {
               {text: 'OK', onPress: () => fnFailed()},
             ])
         }
+        <Text>
+          { JSON.stringify(this.props) }
+          { JSON.stringify(valCreateInput) }
+        </Text>
         <Input
           data={
             {
               placeholder:'Room name',
-              fn: () => SetValCreateInput(valCreateInput),
+              fn: (e) => SetValCreateInput(e),
               secureMode: false,
               style: {
                 fontSize: 17,
@@ -91,27 +105,37 @@ export default ModalComp = ({data: {
           style={BoxButtonRegister}
           styleText={buttonTextRegisterStyle}
           fn={() => {
-            //check input if input empty
-            changeModalVisible()
+            if (valCreateInput.length === 0) {
+              // fnAddRoom(this.props.currentUser, () => {
+              //   // fnSuccess(this.props.currentUser.email)
+              //   fnSuccess()})
+              return alert('You need to fill your room name')
+            } else {
+
+              setRoom(currentUser, valCreateInput)
+              changeModalVisible()
+            }
           }}
-          title="Create Room"/> */}
+          title="Create Room"/>
       </Modal>
     </View>
   )
+  }
 }
 
 const setStateToProps = (state) => {
   return ({
-    // valCreateInput: state.valCreateInput.valCreateInput,
-    // actionModalStatus: state.actionModalStatus.actionModalStatus,
-    // currentUser: state.currentUser.currentUser
+    valCreateInput: state.valCreateInput.valCreateInput,
+    actionModalStatus: state.actionModalStatus.actionModalStatus,
+    currentUser: state.currentUser.currentUser
   })
 }
 
 const setDispatchToProps = (dispatch) => {
   return({
-    SetValCreateInput: (val) => dispatch(SetValCreateInput(val))
+    SetValCreateInput: (val) => dispatch(SetValCreateInput(val)),
+    setRoom: (valUser, valName) => dispatch(setRoom(valUser, valName))
   })
 }
 
-// export default connect(setStateToProps,setDispatchToProps)(ModalComp)
+export default connect(setStateToProps,setDispatchToProps)(ModalComp)

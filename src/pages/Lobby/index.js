@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, FlatList, Modal} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
@@ -50,7 +50,9 @@ class Lobby extends Component {
       contentProfile,
       cardList,
       BoxButtonRegister,
-      buttonTextRegisterStyle
+      buttonTextRegisterStyle,
+      boxButtonJoinRoom,
+      buttonTextJoinRoomStyle,
     } = styles
 
     return (
@@ -78,16 +80,57 @@ class Lobby extends Component {
             <View style={contentProfile}>
               <FlatList
                 data={dataRoom}
-                renderItem={({item}) => <View style={cardList}>
-              </View>}
+                renderItem={({item}) => 
+                <View style={cardList}>
+                  <View style={{
+                    flex:1,
+                    flexDirection: 'row'
+                  }}>
+                    <View style={{
+                      flex: 1,
+                      paddingBottom: 10
+                    }}>
+                      <Text>
+                        room :
+                        { ' '+item.room.name }
+                      </Text>
+                      <Text>
+                        host :
+                        { ' '+item.room.players.p1.fname }
+                      </Text>
+                    </View>
+                    <View style={{
+                      flex: 1,
+                      alignItems: 'flex-start',
+                    }}>
+                      <View style={{
+                        borderRadius: 5,
+                        padding: 5,
+                        alignSelf: 'flex-end',
+                        alignItems: 'center',
+                        backgroundColor: item.room.status === 'waiting' ? 'red' : 'green'
+                      }}>
+                        <Text style={{
+                          color: 'white',
+                          fontSize: 10,
+                          fontWeight: '400'
+                        }}>
+                          { item.room.status }
+                        </Text>
+                      </View>
+                    </View>                    
+                  </View>
+                  <ButtonComp
+                    style={boxButtonJoinRoom}
+                    styleText={buttonTextJoinRoomStyle}
+                    fn={() => {}}
+                    title="Join room"/>
+                </View>}
               />
             </View>
             <ActionArea fn={this.props.navigation.navigate}/>
           </View>
-          {/* <Modal>
-
-          </Modal> */}
-          {/* <Modal
+          <ModalComp
             data={{
               changeModalVisible: this.changeModalVisible,
               modalVisible : this.state.modalVisible,
@@ -95,13 +138,11 @@ class Lobby extends Component {
               msgSuccess: 'Room created', 
               msgFailed: 'Creating room failed',
               fn: {
-                fnAddRoom: this.props.setRoom(),
-                fnSuccess: this.props.navigation.navigate('Home'),
+                fnSuccess: this.props.navigation.navigate('Lobby'),
                 fnFailed: this.props.navigation.navigate('Lobby'),
               }
             }}
-          >
-          </Modal> */}
+          />
           <View style={paddingInner}>
           </View>
         </View>
@@ -138,17 +179,16 @@ const styles = {
     marginTop: 10,
     padding: 5,
     borderRadius: 10,
-    borderWidth: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
   cardList: {
+    flexDirection: 'column',
     marginBottom: 10,
     width: Dimensions.get('window').width * 0.78,
     elevation: 2,
     padding: 8,
     borderRadius: 10,
-    height: 80,
     backgroundColor: 'white',
     borderColor: 'red'
   },
@@ -173,6 +213,20 @@ const styles = {
     fontWeight: '500',
     color: '#BCDAFB'
   },
+  buttonTextJoinRoomStyle: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#BCDAFB'
+  },
+  boxButtonJoinRoom: {
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 7,
+    backgroundColor: '#1D65A6',
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 }
 
 const setStateToProps = (state) => {
