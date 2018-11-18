@@ -28,8 +28,9 @@ export default class ArenaGame extends Component {
     // Set initial state here
     this.state = {
       text : "preparing arena..",
-      welcomeText: "opening portal",
+      welcomeText: "Touch Diamond When You Are Ready!!!",
       summonDragons: true,
+      playerReady: false
     };
 
     // bind 'this' to functions
@@ -44,22 +45,93 @@ export default class ArenaGame extends Component {
       
         <ViroAmbientLight color={"#aaaaaa"} />
             
-          <ViroText text={this.state.welcomeText} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
+          <ViroText 
+            text={this.state.welcomeText} 
+            scale={[.5, .5, .5]} 
+            position={[0, 0, -1]} 
+            width={2} height={2}
+            textLineBreakMode="wordwrap"
+            style={styles.helloWorldTextStyle} />
+          
+          <ViroAmbientLight color="#ffffff" intensity={200}/>
+          <Viro3DObject
+            source={require('./res/emoji_smile/emoji_smile.vrx')}
+            resources={[require('./res/emoji_smile/emoji_smile_diffuse.png'),
+                require('./res/emoji_smile/emoji_smile_normal.png'),
+                require('./res/emoji_smile/emoji_smile_specular.png')]}
+            position={[0, 0, -1]}
+            scale={[.2, .2, .2]}
+            onClick={() => this.setState({playerReady: true, welcomeText: 'Opening Portal'})}
+            type="VRX" />
+          
+
 
           <ViroAmbientLight color="#ffffff" intensity={200}/>
+          
+          {this.state.playerReady && this.loadPortal()}
+       
+ 
+      </ViroARScene>
+    );
+  }
+
+  portalOnLoad = () => {
+    // this.props.arSceneNavigator.customNavigation()
+    this.setState({
+      welcomeText: 'Inside'
+    });
+  }
+
+  summonDragons = () => {
+    setTimeout( () => {
+      this.setState({
+        summonDragons: true
+      });
+    }, 10000)
+
+  }
+  
+
+  _onInitialized(state, reason) {
+    if (state == ViroConstants.TRACKING_NORMAL) {
+      this.setState({
+        text : "Summoning dragons.."
+      });
+    } else if (state == ViroConstants.TRACKING_NONE) {
+      // Handle loss of tracking
+    }
+  }
+
+  _onLoadEnd() {
+    this.setState({
+      text : "FIGHT"
+    });
+    setTimeout(() => {
+      
+      this.setState({
+        text : "player x wins"
+      });
+      
+      //navigate push to win page
+    }, 10000);
+ }
+
+
+ loadPortal = () => {
+    return (
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, -1, -3]} scale={[.4, .4, .4]}>
+            <ViroPortal position={[0, 0, -1]} scale={[.7, .7, .4]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
                             require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
-                type="VRX" onLoadEnd={this.portalOnLoad}/>
+                type="VRX"/>
             </ViroPortal>
             <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
 
             <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
 
-           <ViroNode position={[-4, 0, -10]} scale={[0.8, 0.8, 0.8]}>
+           <ViroNode position={[-4, 0, -14]} scale={[0.8, 0.8, 0.8]}>
              <Viro3DObject
               source={require('./res/heroes/redDragon/orange-dragon.vrx')}
               resources={[require('./res/heroes/redDragon/color-map-dents.png'),
@@ -77,21 +149,23 @@ export default class ArenaGame extends Component {
               position={[0, 2, 0]}
               rotation={[0, 90, 0]}
               scale={[0.3, 0.3, 0.3]}
+              animation={{name: "playerOneMove", run: true, loop: true}}
               onLoadEnd={this._onLoadEnd}
               type="VRX"
               />
-              <ViroSpatialSound
-                  rolloffModel="linear"
-                  paused={false}
-                  muted={false}
-                  minDistance={3}
-                  maxDistance={5}
-                  position={[1, 0, -7]}
-                  source={require('../js/res/sounds/arena/dragons/roar1.wav')}
-                  loop={true}
-                  volume={1.0}
-                  onFinish={this.onFinishSpatial}
-                  onError={this.onErrorSpatial}/>
+              {/* <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
+                <ViroSpatialSound
+                    rolloffModel="linear"
+                    paused={false}
+                    muted={false}
+                    minDistance={15}
+                    maxDistance={5}
+                    source={require('../js/res/sounds/arena/dragons/roar1.wav')}
+                    loop={true}
+                    volume={1}
+                    onFinish={this.onFinishSpatial}
+                    onError={this.onErrorSpatial}/>
+              </ViroNode> */}
 
             {/* Start Particle */}
             <ViroNode position={[.2, 2, 0]} scale={[1, 1, 1]}>
@@ -135,7 +209,8 @@ export default class ArenaGame extends Component {
                 }}
 
                 particlePhysics={{
-                  velocity:{initialRange:[[0,.3,0], [0,.5,0]]}
+                  velocity:{initialRange:[[2,2,0], [2,-2,0]]},
+                  acceleration:{initialRange:[[0,0,0], [0,0,0]]}
                 }}
                 />
             </ViroNode>
@@ -146,9 +221,9 @@ export default class ArenaGame extends Component {
 
 
 
-            <ViroNode position={[4, 0, -10]} scale={[0.8, 0.8, 0.8]}>
-             <Viro3DObject
-              source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+            {/* <ViroNode position={[4, 0, -14]} scale={[0.8, 0.8, 0.8]}>
+             <Viro3DObject */}
+              {/* source={require('./res/heroes/redDragon/orange-dragon.vrx')}
               resources={[require('./res/heroes/redDragon/color-map-dents.png'),
                           require('./res/heroes/redDragon/color-map-eye.jpg'),
                           require('./res/heroes/redDragon/color_map1.jpg'),
@@ -227,54 +302,12 @@ export default class ArenaGame extends Component {
                 />
             </ViroNode>
            
-          </ViroNode>
+          </ViroNode> */}
         </ViroPortalScene>
-       
- 
-      </ViroARScene>
-    );
-  }
-
-  portalOnLoad = () => {
-    // this.props.arSceneNavigator.customNavigation()
-    this.setState({
-      welcomeText: 'Inside'
-    });
-  }
-
-  summonDragons = () => {
-    setTimeout( () => {
-      this.setState({
-        summonDragons: true
-      });
-    }, 10000)
-
-  }
-  
-
-  _onInitialized(state, reason) {
-    if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text : "Summoning dragons.."
-      });
-    } else if (state == ViroConstants.TRACKING_NONE) {
-      // Handle loss of tracking
-    }
-  }
-
-  _onLoadEnd() {
-    this.setState({
-      text : "FIGHT"
-    });
-    setTimeout(() => {
-      
-      this.setState({
-        text : "player x wins"
-      });
-      
-      //navigate push to win page
-    }, 10000);
+        
+    )
  }
+
 
 }
 
@@ -288,15 +321,26 @@ var styles = StyleSheet.create({
   },
 });
 
-
 ViroAnimations.registerAnimations({
-  rotatePLayerOne: {
-    properties: {
-      rotateY: "+90"
-    },
-    duration: 250, //.25 seconds
-  }
+  moveUp:{properties:{positionY:"+=0.9"}, duration: 1000},
+  moveDown:{properties:{positionY:"-=0.9"}, duration: 1000},
+  playerOneMove:[
+    ["moveUp", "moveDown"],
+  ]
 });
+
+
+
+// ViroAnimations.registerAnimations({
+//   playerOneMove: {
+//     properties: {
+//       positionY: "+=.2",
+//       positionY: "-=.2"
+//     },
+//     easing:"EaseInEaseOut",
+//     duration: 250
+//   }
+// });
 
 ViroAnimations.registerAnimations({
   rotatePLayerTwo: {

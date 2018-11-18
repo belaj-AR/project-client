@@ -19,7 +19,7 @@ class Game extends Component {
 
     this.state = {
       sharedProps : sharedProps,
-      initAr: false
+      initAr: true
     }
 
   }
