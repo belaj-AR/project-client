@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator, createNavigator } from 'react-navigation';
+import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator } from 'react-navigation';
 
 
 import Config from './config';
@@ -16,7 +16,7 @@ import Login from './src/pages/Login'
 import Register from './src/pages/Register'
 import Lobby from './src/pages/Lobby'
 import CharOption from './src/pages/CharOptions'
-import LoadingPreGame from './src/pages/LoadingPreGame'
+import Room from './src/pages/LoadingPreGame'
 // import Barrack from './src/pages/Barrack';
 import Game from './src/pages/Game'
 import Home from './src/pages/Home'
@@ -47,10 +47,10 @@ class AuthProcess extends Component {
 
 const AppStack = createTabNavigator({
   Home: Home,
+  Room: Room,
+  CharOption: CharOption,
   Lobby: Lobby,
   Game: Game,
-  LoadingPreGame: LoadingPreGame,
-  CharOption: CharOption
 }, {
   initialRouteName: 'Home'
 })

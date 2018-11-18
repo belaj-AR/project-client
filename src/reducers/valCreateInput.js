@@ -1,5 +1,5 @@
 let defaultState = {
-  valCreateInput: ''
+  valCreateInput: 'asd'
 }
 
 function valCreateInput (state = defaultState, action) {

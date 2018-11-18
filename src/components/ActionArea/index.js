@@ -94,7 +94,7 @@ export default ({ fn }) => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          fn('Lobby')
+          fn('LobbyStack')
         }}
         style={flexTouchableArea}
       >
