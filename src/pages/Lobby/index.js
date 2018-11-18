@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, FlatList, Modal} from 'react-native'
+import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
 import ButtonComp from '../../components/Button'
-import Modal from '../../components/Modal'
+import ModalComp from '../../components/Modal'
+
+import getRoomData from '../../actions/getRoomData'
+import setRoom from '../../actions/setRoom'
 
 class Lobby extends Component {
 
@@ -15,6 +19,13 @@ class Lobby extends Component {
     }
   }
   
+  componentDidMount = () => {
+    let { getRoomData } = this.props
+
+    getRoomData()
+  }
+  
+
   changeModalVisible = () => {
     this.setState({
       modalVisible: !this.state.modalVisible
@@ -28,6 +39,8 @@ class Lobby extends Component {
   }
 
   render() {
+
+    const { dataRoom, currentUser } = this.props
 
     const {
       containerStyle,
@@ -63,24 +76,32 @@ class Lobby extends Component {
           </View>
           <View style={contentArea}>
             <View style={contentProfile}>
-              <View style={cardList}>
-
-              </View>
+              <FlatList
+                data={dataRoom}
+                renderItem={({item}) => <View style={cardList}>
+              </View>}
+              />
             </View>
             <ActionArea fn={this.props.navigation.navigate}/>
           </View>
-          <Modal
+          {/* <Modal>
+
+          </Modal> */}
+          {/* <Modal
             data={{
               changeModalVisible: this.changeModalVisible,
               modalVisible : this.state.modalVisible,
               msgTitle: 'Notification Create', 
               msgSuccess: 'Room created', 
               msgFailed: 'Creating room failed',
-              fnSuccess: this.props.navigation.navigate('Home'),
-              fnFailed: this.props.navigation.navigate('Lobby')
+              fn: {
+                fnAddRoom: this.props.setRoom(),
+                fnSuccess: this.props.navigation.navigate('Home'),
+                fnFailed: this.props.navigation.navigate('Lobby'),
+              }
             }}
           >
-          </Modal>
+          </Modal> */}
           <View style={paddingInner}>
           </View>
         </View>
@@ -122,7 +143,8 @@ const styles = {
     alignItems: 'center'
   },
   cardList: {
-    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: Dimensions.get('window').width * 0.78,
     elevation: 2,
     padding: 8,
     borderRadius: 10,
@@ -153,4 +175,20 @@ const styles = {
   },
 }
 
-export default Lobby
+const setStateToProps = (state) => {
+  return ({
+    // onlineUser: state.onlineUser.onlineUser,
+    // roomId: state.roomId.roomId,
+    currentUser: state.currentUser.currentUser,
+    dataRoom: state.dataRoom.dataRoom
+  })
+}
+
+const setDispatchToProps = (dispatch) => {
+  return({
+    getRoomData: () => dispatch(getRoomData()),
+    setRoom: () => dispatch(setRoom())
+  })
+}
+
+export default connect(setStateToProps,setDispatchToProps)(Lobby)

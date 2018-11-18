@@ -31,7 +31,7 @@ const {
   buttonTextRegisterStyle
 } = styles
 
-const ModalComp = ({data: { 
+export default ModalComp = ({data: { 
   modalVisible, 
   msgTitle, 
   msgSuccess, 
@@ -40,8 +40,11 @@ const ModalComp = ({data: {
   SetValCreateInput, 
   actionModalStatus,
   changeModalVisible,
-  fnSuccess, 
-  fnFailed }}) => {
+  fn: {
+    fnSuccess, 
+    fnFailed,
+    fnAddRoom,
+  } }}) => {
 
   return (
     <View>
@@ -49,10 +52,13 @@ const ModalComp = ({data: {
         animationType="slide"
         transparent={false}
         visible={modalVisible}>
-        {
+        {/* {
           actionModalStatus === 'success' &&
             Alert(msgTitle, msgSuccess, [
-              {text: 'OK', onPress: () => fnSuccess()},
+              {text: 'OK', onPress: () => fnAddRoom(this.props.currentUser, () => {
+                // fnSuccess(this.props.currentUser.email)
+                fnSuccess()
+              })},
             ])
         }
         {
@@ -85,9 +91,10 @@ const ModalComp = ({data: {
           style={BoxButtonRegister}
           styleText={buttonTextRegisterStyle}
           fn={() => {
+            //check input if input empty
             changeModalVisible()
           }}
-          title="Create Room"/>
+          title="Create Room"/> */}
       </Modal>
     </View>
   )
@@ -95,8 +102,9 @@ const ModalComp = ({data: {
 
 const setStateToProps = (state) => {
   return ({
-    valCreateInput: state.valCreateInput.valCreateInput,
-    actionModalStatus: state.actionModalStatus.actionModalStatus,
+    // valCreateInput: state.valCreateInput.valCreateInput,
+    // actionModalStatus: state.actionModalStatus.actionModalStatus,
+    // currentUser: state.currentUser.currentUser
   })
 }
 
@@ -106,4 +114,4 @@ const setDispatchToProps = (dispatch) => {
   })
 }
 
-export default connect(setStateToProps,setDispatchToProps)(ModalComp)
+// export default connect(setStateToProps,setDispatchToProps)(ModalComp)
