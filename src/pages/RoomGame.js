@@ -1,16 +1,22 @@
 import React, { Component } from 'react'
-import  { View,Text, Image, BackHandler } from 'react-native'
+import  { View,Text, Image, FlatList, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 
 import ButtonComp from '../components/Button'
 
 import getRoomBattleData from '../actions/getRoomBattleData'
 import exitRoom from '../actions/exitRoom'
+import setPickMonster from '../actions/setPickMonster'
+import setOnGameData from '../actions/setOnGameData'
 
 class RoomGame extends Component {
 
   constructor(props){
     super(props)
+
+    this.state = {
+      isGameAllowedToStart: false
+    }
   }
 
   componentDidMount = () => {
@@ -28,8 +34,24 @@ class RoomGame extends Component {
     }
   }
 
+  roomChecker = () => {
+    let { dataRoomBattle } = this.props
+
+    if (dataRoomBattle) {
+      if (dataRoomBattle.players.length === 2) {
+        if (dataRoomBattle.players[0].monster && dataRoomBattle.players[1].monster) {
+          return true
+        }
+      }
+    }
+  }
+
   playGame = () => {
-    this.props.navigation.navigate('Game')
+
+    let { dataRoomBattle, setOnGameData, navigation } = this.props
+
+    setOnGameData(dataRoomBattle.players)
+    navigation.navigate('Game')
   }
 
   exitRoom = (currentRoomId, currentUserEmail, structureDataPlayers) => {
@@ -48,19 +70,8 @@ class RoomGame extends Component {
 
     const { dataRoomBattle, currentUser } = this.props
 
-     const dataUser = [
-                       {name: 'Harles Bayu Agggara', avatar:'https://banner2.kisspng.com/20180410/bbw/kisspng-avatar-user-medicine-surgery-patient-avatar-5acc9f7a7cb983.0104600115233596105109.jpg', win: 10, lose: 3, heroID: 'abcde'},
-                       {name: 'Giri Anggara', avatar:'https://banner2.kisspng.com/20180410/bbw/kisspng-avatar-user-medicine-surgery-patient-avatar-5acc9f7a7cb983.0104600115233596105109.jpg', win: 10, lose: 4, heroID: 'abcde'},
-                      ]  
-
     return (
       <View style={containerStyle}>
-        <Text>
-          { JSON.stringify(this.props.dataRoomBattle) }
-        </Text>
-        <Text>
-          { JSON.stringify(this.props.roomId) }
-        </Text>
         {
           dataRoomBattle &&
             dataRoomBattle.players.map((user, idx) => 
@@ -81,19 +92,53 @@ class RoomGame extends Component {
             </View>
           )
         }
+        <View style={{
+          flexDirection: 'row'
+        }}>
+          { dataRoomBattle &&
+            dataRoomBattle.players.map((user, idx) => {
+              return (
+                user.email === currentUser.email &&
+                !user.monster &&
+                  <FlatList
+                      data={[{element: 'fire'},{element: 'water'},{element: 'earth'}]}
+                      horizontal
+                      renderItem={({item}) => (
+                        <TouchableOpacity
+                          onPress={() => this.props.setPickMonster(this.props.roomId, currentUser.email, dataRoomBattle.players, item)}
+                        >
+                          <View style={{
+                            height: 50,
+                            width: 50,
+                            borderRadius: 10,
+                            backgroundColor: 'black',
+                            margin: 5
+                          }}>
 
-        <View style={cardContainer}>
-          <ButtonComp 
-            style={BoxButtonPlayGame} 
-            styleText={buttonTextPlayGameStyle} 
-            fn={() => this.playGame()} 
-            title='START GAME'/>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                    />
+              )
+            })
+          }
         </View>
+
+        {
+          this.roomChecker() &&
+            <View style={cardContainer}>
+              <ButtonComp 
+                style={BoxButtonPlayGame} 
+                styleText={buttonTextPlayGameStyle} 
+                fn={() => this.playGame()} 
+                title='START GAME'/>
+            </View>
+        }
         <View style={cardContainer}>
           <ButtonComp 
             style={BoxButtonPlayGame} 
-            styleText={buttonTextPlayGameStyle} 
-            fn={() => this.exitRoom(this.props.roomId, currentUser.email, dataRoomBattle.players)} 
+            styleText={buttonTextPlayGameStyle}
+            fn={() => this.exitRoom(this.props.roomId, currentUser.email, dataRoomBattle.players)}
             title='Exit'/>
         </View>
         
@@ -159,7 +204,9 @@ const setStateToProps = (state) => {
 const setDispatchToProps = (dispatch) => {
   return({
     getRoomBattleData: (key) => dispatch(getRoomBattleData(key)),
-    exitRoom: (currentRoomId, currentUserEmail, structureDataPlayers) => dispatch(exitRoom(currentRoomId, currentUserEmail, structureDataPlayers))
+    exitRoom: (currentRoomId, currentUserEmail, structureDataPlayers) => dispatch(exitRoom(currentRoomId, currentUserEmail, structureDataPlayers)),
+    setPickMonster: (currentRoomId, currentUserEmail, structureDataPlayers, monsterData) => dispatch(setPickMonster(currentRoomId, currentUserEmail, structureDataPlayers, monsterData)),
+    setOnGameData: (data) => dispatch(setOnGameData(data))
   })
 }
 

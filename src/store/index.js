@@ -11,6 +11,7 @@ import roomId from '../reducers/currentRoomId'
 import currentUser from '../reducers/currentUser'
 import dataRoom from '../reducers/dataRoom'
 import dataRoomBattle from '../reducers/dataRoomBattle'
+import onGameData from '../reducers/onGamedata'
 
 const reducers = combineReducers({
   FormInput, 
@@ -23,7 +24,8 @@ const reducers = combineReducers({
   roomId,
   currentUser,
   dataRoom,
-  dataRoomBattle
+  dataRoomBattle,
+  onGameData
 })
 
 const store = createStore(

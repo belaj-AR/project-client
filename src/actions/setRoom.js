@@ -19,7 +19,7 @@ export default ({ email, fname, avatar }, roomName) => {
           fname: fname ,
           email: email,
           avatar: avatar,
-          monster: 'naga kocak'
+          monster: null
         }
       },
       status: 'Waiting'    
