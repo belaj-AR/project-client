@@ -2,34 +2,11 @@ import React, {Component} from 'react'
 import {Modal, Text, TextInput, TouchableHighlight, View} from 'react-native'
 import { connect } from 'react-redux'
 
-import Alert from '../Alert'
 import Input from '../Input'
 import ButtonComp from '../Button'
 
 import SetValCreateInput from '../../actions/SetValCreateInput'
 import setRoom from '../../actions/setRoom'
-
-const styles = {
-  BoxButtonRegister: {
-    elevation: 2,
-    marginTop: 30,
-    borderRadius: 7,
-    backgroundColor: '#192E5B',
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonTextRegisterStyle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#BCDAFB'
-  }
-}
-
-const {
-  BoxButtonRegister,
-  buttonTextRegisterStyle
-} = styles
 
 class ModalComp extends Component {
 
@@ -56,27 +33,18 @@ class ModalComp extends Component {
       }
     }} = this.props
 
+
+    const {
+      BoxButtonRegister,
+      buttonTextRegisterStyle
+    } = styles
+
   return (
     <View>
       <Modal 
         animationType="slide"
         transparent={false}
         visible={modalVisible}>
-        {
-          actionModalStatus === 'success' &&
-            Alert(msgTitle, msgSuccess, [
-              {text: 'OK', onPress: () => fnAddRoom(currentUser, () => {
-                // fnSuccess(this.props.currentUser.email)
-                fnSuccess()
-              })},
-            ])
-        }
-        {
-          actionModalStatus === 'failed' &&
-            Alert(msgTitle, msgFailed, [
-              {text: 'OK', onPress: () => fnFailed()},
-            ])
-        }
         <Text>
           { JSON.stringify(this.props) }
           { JSON.stringify(valCreateInput) }
@@ -106,12 +74,8 @@ class ModalComp extends Component {
           styleText={buttonTextRegisterStyle}
           fn={() => {
             if (valCreateInput.length === 0) {
-              // fnAddRoom(this.props.currentUser, () => {
-              //   // fnSuccess(this.props.currentUser.email)
-              //   fnSuccess()})
               return alert('You need to fill your room name')
             } else {
-
               setRoom(currentUser, valCreateInput)
               changeModalVisible()
             }
@@ -120,6 +84,24 @@ class ModalComp extends Component {
       </Modal>
     </View>
   )
+  }
+}
+
+
+const styles = {
+  BoxButtonRegister: {
+    elevation: 2,
+    marginTop: 30,
+    borderRadius: 7,
+    backgroundColor: '#192E5B',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonTextRegisterStyle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#BCDAFB'
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, BackHandler, BackAndroid, Dimensions, FlatList} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
@@ -8,6 +8,7 @@ import ModalComp from '../../components/Modal'
 
 import getRoomData from '../../actions/getRoomData'
 import setRoom from '../../actions/setRoom'
+import joinRoom from '../../actions/joinRoom'
 
 class Lobby extends Component {
 
@@ -21,21 +22,32 @@ class Lobby extends Component {
   
   componentDidMount = () => {
     let { getRoomData } = this.props
-
     getRoomData()
+    BackHandler.addEventListener('hardwareBackPress', this.true)
+  }
+
+  componentDidUpdate = () => {
+    if (this.props.roomId !== null) {
+      this.props.navigation.navigate('Room');
+    }
+  }
+
+  componentWillUnmount = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this.true)
   }
   
-
+  true () {
+    return true
+  }
+  
   changeModalVisible = () => {
     this.setState({
       modalVisible: !this.state.modalVisible
     })
   }
 
-  joinRoom = () => {
-    Alert('Notification', 'Creating an account success!', [
-      {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
-    ])
+  joinRoom = (currentUser, key) => {
+    this.props.joinRoom(currentUser, key)
   }
 
   render() {
@@ -80,52 +92,57 @@ class Lobby extends Component {
             <View style={contentProfile}>
               <FlatList
                 data={dataRoom}
-                renderItem={({item}) => 
-                <View style={cardList}>
-                  <View style={{
-                    flex:1,
-                    flexDirection: 'row'
-                  }}>
-                    <View style={{
-                      flex: 1,
-                      paddingBottom: 10
-                    }}>
-                      <Text>
-                        room :
-                        { ' '+item.room.name }
-                      </Text>
-                      <Text>
-                        host :
-                        { ' '+item.room.players.p1.fname }
-                      </Text>
-                    </View>
-                    <View style={{
-                      flex: 1,
-                      alignItems: 'flex-start',
-                    }}>
-                      <View style={{
-                        borderRadius: 5,
-                        padding: 5,
-                        alignSelf: 'flex-end',
-                        alignItems: 'center',
-                        backgroundColor: item.room.status === 'waiting' ? 'red' : 'green'
-                      }}>
-                        <Text style={{
-                          color: 'white',
-                          fontSize: 10,
-                          fontWeight: '400'
+                renderItem={({item}) => {
+                    if (item.room.name !== 'InitAdmin') {
+                      return (
+                      <View style={cardList}>
+                        <View style={{
+                          flex:1,
+                          flexDirection: 'row'
                         }}>
-                          { item.room.status }
-                        </Text>
-                      </View>
-                    </View>                    
-                  </View>
-                  <ButtonComp
-                    style={boxButtonJoinRoom}
-                    styleText={buttonTextJoinRoomStyle}
-                    fn={() => {}}
-                    title="Join room"/>
-                </View>}
+                          <View style={{
+                            flex: 1,
+                            paddingBottom: 10
+                          }}>
+                            <Text>
+                              room :
+                              { ' '+item.room.name }
+                            </Text>
+                            <Text>
+                              host :
+                              { ' '+item.room.players.p1.fname }
+                            </Text>
+                          </View>
+                          <View style={{
+                            flex: 1,
+                            alignItems: 'flex-start',
+                          }}>
+                            <View style={{
+                              borderRadius: 5,
+                              padding: 5,
+                              alignSelf: 'flex-end',
+                              alignItems: 'center',
+                              backgroundColor: item.room.status === 'Waiting' ? 'green' : 'red'
+                            }}>
+                              <Text style={{
+                                color: 'white',
+                                fontSize: 10,
+                                fontWeight: '400'
+                              }}>
+                                { item.room.status }
+                              </Text>
+                            </View>
+                          </View>                    
+                        </View>
+                        <ButtonComp
+                          style={boxButtonJoinRoom}
+                          styleText={buttonTextJoinRoomStyle}
+                          fn={() => this.joinRoom(currentUser, item.room.id)}
+                          title="Join room"/>
+                      </View>)
+                    }   
+                  }
+                }
               />
             </View>
             <ActionArea fn={this.props.navigation.navigate}/>
@@ -138,8 +155,8 @@ class Lobby extends Component {
               msgSuccess: 'Room created', 
               msgFailed: 'Creating room failed',
               fn: {
-                fnSuccess: this.props.navigation.navigate('Lobby'),
-                fnFailed: this.props.navigation.navigate('Lobby'),
+                fnSuccess: () => this.props.navigation.navigate('Lobby'),
+                fnFailed: () => this.props.navigation.navigate('Lobby'),
               }
             }}
           />
@@ -232,7 +249,7 @@ const styles = {
 const setStateToProps = (state) => {
   return ({
     // onlineUser: state.onlineUser.onlineUser,
-    // roomId: state.roomId.roomId,
+    roomId: state.roomId.roomId,
     currentUser: state.currentUser.currentUser,
     dataRoom: state.dataRoom.dataRoom
   })
@@ -241,7 +258,8 @@ const setStateToProps = (state) => {
 const setDispatchToProps = (dispatch) => {
   return({
     getRoomData: () => dispatch(getRoomData()),
-    setRoom: () => dispatch(setRoom())
+    setRoom: () => dispatch(setRoom()),
+    joinRoom: (currentUser, key) => dispatch(joinRoom(currentUser, key))
   })
 }
 
