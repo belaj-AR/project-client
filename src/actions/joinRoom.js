@@ -8,7 +8,7 @@ export default ({ fname, email, avatar },key) => {
       fname ,
       email,
       avatar,
-      monster: 'naga kocak'
+      monster: null
     }, err => {
     if (!err) {
       dispatch({type: 'SET_ROOM_ID', payload: key})
