@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator } from 'react-navigation';
+import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator, createNavigator } from 'react-navigation';
 
 
 import Config from './config';
@@ -51,6 +51,8 @@ const AppStack = createTabNavigator({
   Game: Game,
   LoadingPreGame: LoadingPreGame,
   CharOption: CharOption
+}, {
+  initialRouteName: 'Home'
 })
 
 const LoginStack = createStackNavigator({

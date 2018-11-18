@@ -6,6 +6,10 @@ import itemReducer from '../reducers/item'
 import token from '../reducers/Token'
 import valCreateInput from '../reducers/valCreateInput'
 import actionModalStatus from '../reducers/actionModalStatus'
+import onlineUser from '../reducers/onlineUser'
+import roomId from '../reducers/currentRoomId'
+import currentUser from '../reducers/currentUser'
+import dataRoom from '../reducers/dataRoom'
 
 const reducers = combineReducers({
   FormInput, 
@@ -13,7 +17,11 @@ const reducers = combineReducers({
   itemReducer, 
   token,
   valCreateInput,
-  actionModalStatus
+  actionModalStatus,
+  onlineUser,
+  roomId,
+  currentUser,
+  dataRoom
 })
 
 const store = createStore(

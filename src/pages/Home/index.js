@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {View, Text, Alert, ScrollView, TouchableOpacity, AsyncStorage} from 'react-native'
+import axios from 'axios'
+import {View, Text, Alert, ScrollView, TouchableOpacity, AsyncStorage, Image} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
@@ -7,6 +8,11 @@ import ButtonComp from '../../components/Button'
 
 import logout from '../../actions/logout'
 import setToken from '../../actions/setToken'
+import getCurrentUser from '../../actions/getCurrentUser'
+
+import config from '../../../config'
+
+const { ngrokTunnel } = config
 
 class HomePage extends Component {
 
@@ -14,17 +20,35 @@ class HomePage extends Component {
     super(props)
   }
 
+  componentDidMount = async () => {
+
+    let { getCurrentUser } = this.props
+
+    let token = await AsyncStorage.getItem('token')
+  
+    getCurrentUser(token)
+  }
+
+  wow = async (token) => {
+    
+    alert(token)
+
+    
+  }
+  
+
   async logoutUser () {
     let { logout } = this.props
 
     logout()
     await AsyncStorage.removeItem('token')
+    this.props.setToken(null)
     this.props.navigation.navigate('Login')
   }
   
   render() {
     
-    const { token, logout, authProcess } = this.props
+    const { token, logout, authProcess, currentUser } = this.props
 
     const {
       containerStyle,
@@ -62,8 +86,13 @@ class HomePage extends Component {
                 flexDirection: 'row',
                 borderWidth: 0.2
               }}>
-                <View style={{width:80, height:80, borderRadius: 10,backgroundColor: 'black'}}>
-                </View>
+                {
+                  currentUser &&
+                    <Image
+                      style={{width: 80, height: 80, borderRadius: 10}}
+                      source={{uri: currentUser.avatar}}
+                    />
+                }
                 <View style={{
                   flex: 1,
                   width: 10,
@@ -75,14 +104,20 @@ class HomePage extends Component {
                     fontWeight: '500',
                     textAlign: 'left'
                   }}>
-                    Gusti
+                    {
+                      currentUser &&
+                      currentUser.fname
+                    }
                   </Text>
                   <Text style={{
                     fontSize: 15,
                     fontWeight: '300',
                     textAlign: 'left'
                   }}>
-                    gstandryeanb@gmail.com
+                    {
+                      currentUser &&
+                      currentUser.email
+                    }
                   </Text>
                 </View>
               </View>
@@ -95,9 +130,6 @@ class HomePage extends Component {
                   marginTop: 20,
                 }}>
                 </View>
-                  <Text>
-                    { token }
-                  </Text>
               </View>
               <View style={{flex: .1}}>
                 <ButtonComp
@@ -181,14 +213,16 @@ const styles = {
 
 const setStateToProps = (state) => {
   return ({
-    token: state.token.token
+    token: state.token.token,
+    currentUser: state.currentUser.currentUser
   })
 }
 
 const setDispatchToProps = (dispatch) => {
   return({
     logout: () => dispatch(logout()),
-    setToken: (token) => dispatch(setToken(token))
+    setToken: (token) => dispatch(setToken(token)),
+    getCurrentUser: (token) => dispatch(getCurrentUser(token))
   })
 }
 

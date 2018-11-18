@@ -51,7 +51,7 @@ class Login extends Component {
 
     firebaseAuth.signInWithEmailAndPassword(email, password)
       .then(({ user: { uid } }) => {
-
+        alert(uid)
         return axios({
           url: `${ngrokTunnel}/users/login`,
           method: 'post',
