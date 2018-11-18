@@ -20,23 +20,19 @@ class HomePage extends Component {
     super(props)
   }
 
+
   componentDidMount = async () => {
-
     let { getCurrentUser } = this.props
-
     let token = await AsyncStorage.getItem('token')
   
     getCurrentUser(token)
+    BackHandler.addEventListener('hardwareBackPress', this.true)
   }
 
-  wow = async (token) => {
-    
-    alert(token)
-
-    
+  componentWillUnmount = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this.true)
   }
   
-
   async logoutUser () {
     let { logout } = this.props
 

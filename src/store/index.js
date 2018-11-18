@@ -10,6 +10,7 @@ import onlineUser from '../reducers/onlineUser'
 import roomId from '../reducers/currentRoomId'
 import currentUser from '../reducers/currentUser'
 import dataRoom from '../reducers/dataRoom'
+import dataRoomBattle from '../reducers/dataRoomBattle'
 
 const reducers = combineReducers({
   FormInput, 
@@ -21,7 +22,8 @@ const reducers = combineReducers({
   onlineUser,
   roomId,
   currentUser,
-  dataRoom
+  dataRoom,
+  dataRoomBattle
 })
 
 const store = createStore(
