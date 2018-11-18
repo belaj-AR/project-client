@@ -7,7 +7,6 @@ import {
   ViroARScene,
   ViroText,
   ViroConstants,
-  ViroMaterials,
   Viro3DObject,
   ViroAmbientLight,
   ViroSpotLight,
@@ -31,14 +30,22 @@ export default class ArenaGame extends Component {
       welcomeText: "Touch Diamond When You Are Ready!!!",
       summonDragons: true,
       playerReady: false,
-      portalSound: false
+      portalSound: false,
+
+      playerOneLose: false,
+      playerTwoLose: false
     };
 
-    // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
-    this._onLoadEnd = this._onLoadEnd.bind(this);
   }
 
+  setPlayerLose = () => {
+    setTimeout( () => {
+      this.setState({
+        playerOneLose: true
+      });
+    }, 7000)
+  }
 
   render() {
     return (
@@ -62,35 +69,8 @@ export default class ArenaGame extends Component {
                 require('./res/emoji_smile/emoji_smile_specular.png')]}
             position={[0, 0, -1]}
             scale={[.2, .2, .2]}
-            onClick={() => this.setState({playerReady: true, welcomeText: 'Opening Portal'})}
+            onClick={() => this.setState({playerReady: true, portalSound: true, welcomeText: 'Opening Portal'})}
             type="VRX" />
-
-           <ViroText 
-            text={"helo helo test masuk"}
-            visible={this.state.portalSound} 
-            scale={[.5, .5, .5]} 
-            position={[0, 0, -1]} 
-            width={2} height={2}
-            textLineBreakMode="wordwrap"
-            style={styles.helloWorldTextStyle} />
-          
-          {
-            this.state.playerReady && 
-            ( 
-              <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
-                <ViroSpatialSound
-                    rolloffModel="linear"
-                    paused={this.state.portalSound}
-                    muted={this.state.portalSound}
-                    minDistance={10}
-                    maxDistance={5}
-                    source={require('../js/res/sounds/portal/air_portal.wav')}
-                    loop={true}
-                    volume={1}
-                    />
-              </ViroNode>
-            )
-          }
 
           <ViroAmbientLight color="#ffffff" intensity={200}/>
           
@@ -101,12 +81,12 @@ export default class ArenaGame extends Component {
     );
   }
 
-  portalOnLoad = () => {
-    // this.props.arSceneNavigator.customNavigation()
-    this.setState({
-      welcomeText: 'Inside'
-    });
-  }
+  // portalOnLoad = () => {
+  //   // this.props.arSceneNavigator.customNavigation()
+  //   this.setState({
+  //     welcomeText: 'Inside'
+  //   });
+  // }
 
   summonDragons = () => {
     setTimeout( () => {
@@ -114,6 +94,7 @@ export default class ArenaGame extends Component {
         summonDragons: true
       });
     }, 10000)
+    
 
   }
   
@@ -128,37 +109,26 @@ export default class ArenaGame extends Component {
     }
   }
 
-  _onLoadEnd() {
-    this.setState({
-      text : "FIGHT"
-    });
-    setTimeout(() => {
-      
-      this.setState({
-        text : "player x wins"
-      });
-      
-      //navigate push to win page
-    }, 10000);
- }
-
 
  loadPortal = () => {
     return (
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, -2]} scale={[.7, .7, .4]}>
+            <ViroPortal position={[0, 0, 0]} scale={[.7, .7, .4]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
                             require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
                 type="VRX"
-                onLoad={() => this.setState({portalSound : true})}/>
+                onLoad={() => this.setState({portalSound : false})}/>
             </ViroPortal>
             <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
 
             <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -4]} style={styles.helloWorldTextStyle} />
 
-           <ViroNode position={[-4, 0, -14]} scale={[0.8, 0.8, 0.8]}>
+           <ViroNode 
+            position={[-4, 0, -14]} 
+            scale={[0.8, 0.8, 0.8]}
+            animation={{name: "playerOneMove", run: true, loop: true}}>
              <Viro3DObject
               source={require('./res/heroes/redDragon/orange-dragon.vrx')}
               resources={[require('./res/heroes/redDragon/color-map-dents.png'),
@@ -176,8 +146,7 @@ export default class ArenaGame extends Component {
               position={[0, 2, 0]}
               rotation={[0, 90, 0]}
               scale={[0.3, 0.3, 0.3]}
-              animation={{name: "playerOneMove", run: true, loop: true}}
-              onLoadEnd={this._onLoadEnd}
+              onLoadEnd={this.setPlayerLose}
               type="VRX"
               />
               {/* <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
@@ -194,54 +163,53 @@ export default class ArenaGame extends Component {
                     onError={this.onErrorSpatial}/>
               </ViroNode> */}
 
-            {/* Start Particle */}
-            <ViroNode position={[.2, 2, 0]} scale={[1, 1, 1]}>
-                <ViroParticleEmitter
-                duration={1200}
-                visible={true}
-                run={true}
-                loop={true}
-                fixedToEmitter={false}
+              <ViroNode position={[.2, 2, 0]} scale={[1, 1, 1]}>
+                  <ViroParticleEmitter
+                  duration={1200}
+                  visible={this.state.playerOneLose}
+                  run={true}
+                  loop={true}
+                  fixedToEmitter={false}
 
-                image={{
-                  source:require("./res/particles/particle_fire.png"),
-                  height:8,
-                  width:8,
-                  bloomThreshold:0.0
-                }}
+                  image={{
+                    source:require("./res/particles/particle_fire.png"),
+                    height:8,
+                    width:8,
+                    bloomThreshold:0.0
+                  }}
 
-                spawnBehavior={{
-                  particleLifetime:[500,500],
-                  emissionRatePerSecond:[30, 40],
-                  maxParticles:800
-                }}
+                  spawnBehavior={{
+                    particleLifetime:[500,500],
+                    emissionRatePerSecond:[30, 40],
+                    maxParticles:800
+                  }}
 
-                particleAppearance={{
-                  opacity:{
-                    initialRange:[0.2, 0.2],
-                    factor:"time",
-                    interpolation:[
-                      {endValue:0.2, interval:[0,200]},
-                      {endValue:0.0, interval:[200,500]},
-                    ]
-                  },
-                  scale:{
-                    initialRange:[[1,1,1], [1,1,1]],
-                    factor:"time",
-                    interpolation:[
-                      {endValue:[0,0,0], interval:[150,500]},
-                    ]
-                  },
+                  particleAppearance={{
+                    opacity:{
+                      initialRange:[0.2, 0.2],
+                      factor:"time",
+                      interpolation:[
+                        {endValue:0.2, interval:[0,200]},
+                        {endValue:0.0, interval:[200,500]},
+                      ]
+                    },
+                    scale:{
+                      initialRange:[[1,1,1], [1,1,1]],
+                      factor:"time",
+                      interpolation:[
+                        {endValue:[0,0,0], interval:[150,500]},
+                      ]
+                    },
 
-                }}
+                  }}
 
-                particlePhysics={{
-                  velocity:{initialRange:[[2,2,0], [2,-2,0]]},
-                  acceleration:{initialRange:[[0,0,0], [0,0,0]]}
-                }}
-                />
-            </ViroNode>
-            {/* End Particle */}
+                  particlePhysics={{
+                    velocity:{initialRange:[[2,2,0], [2,-2,0]]},
+                    acceleration:{initialRange:[[0,0,0], [0,0,0]]}
+                  }}
+                  />
+              </ViroNode>
+      
           </ViroNode>
 
 
@@ -357,36 +325,24 @@ ViroAnimations.registerAnimations({
 });
 
 
-
-// ViroAnimations.registerAnimations({
-//   playerOneMove: {
-//     properties: {
-//       positionY: "+=.2",
-//       positionY: "-=.2"
-//     },
-//     easing:"EaseInEaseOut",
-//     duration: 250
-//   }
-// });
-
-ViroAnimations.registerAnimations({
-  rotatePLayerTwo: {
-    properties: {
-      rotateY: "-90"
-    },
-    duration: 250, //.25 seconds
-  }
-});
-
 module.exports = ArenaGame;
 
-{/* <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}}>
-  <ViroPortal position={[0, 0, -9]} scale={[.1, .1, .1]}>
-    <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
-      resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
-                  require('./res/portal_res/portal_ship/portal_ship_normal.png'),
-                  require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
-      type="VRX"/>
-    </ViroPortal>
-  <Viro360Image source={require("./res/portal_res/360_island.jpg")} /> 
-</ViroPortalScene> */}
+
+       
+// {
+//   this.state.portalSound && 
+//   ( 
+//     <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
+//       <ViroSpatialSound
+//           rolloffModel="linear"
+//           paused={this.state.portalSound}
+//           muted={false}
+//           minDistance={10}
+//           maxDistance={5}
+//           source={require('../js/res/sounds/portal/air_portal.wav')}
+//           loop={true}
+//           volume={1}
+//           />
+//     </ViroNode>
+//   )
+// }
