@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import {View, Text} from 'react-native'
+import {View, Text, AsyncStorage} from 'react-native'
 import { connect } from 'react-redux'
+import  axios from 'axios'
+import config from '../../config'
+const { ngrokTunnel } = config
 
 var ArenaGame = require('../../js/ArenaGame');
 
@@ -14,32 +17,50 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      initAr: false,
-      viroAppProps: { players: 
-        [
-          { name: 'Harles',
-            status: false,
-            monster: {
-              water: 'fire',
-              name: 'Red Dragon',
-              model: '',
-              texture: [] }},
-          {
-            name: 'Superman',
-            status: true,
-            monster: {
-              element: 'water',
-              name: 'Blue Dragon',
-              model: '',
-              texture: [] }}
-        ]
-        }
+      initAr: true,
+      viroAppProps: 
+      { 
+        players: this.props.players
       }
+    }
 
   }
 
-  myNavigation = () => {
-    return this.props.navigation.navigate("LoadingPreGame")
+  componentDidMount = () => {
+    this.getToken()
+  }
+
+  getToken = async () => {
+    let token = await AsyncStorage.getItem('token')
+
+    let winner = ''
+    let loser = ''
+
+    if(this.props.players[0].status === true){
+      winner = this.props.players[0].id
+      loser = this.props.players[1].id
+    } else {
+      winner = this.props.players[1].id
+      loser = this.props.players[0].id
+    }
+
+    axios({
+      method: 'POST',
+      url: `${ngrokTunnel}/matches`,
+      headers: {
+        token : token
+      },
+      data: {
+        winner: winner,
+        loser: loser
+      }
+    })
+    .then((result) => {})
+    .catch((err) => {});
+  }
+
+  navigateToHome = () => {
+    return this.props.navigation.navigate("Home")
   }
 
   render(){
@@ -47,12 +68,12 @@ class Game extends Component {
     if(this.state.initAr){
       return (
         <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
-          initialScene={{scene: ArenaGame}} myNavigation={() => this.myNavigation()} viroAppProps={this.state.viroAppProps}/> 
+          initialScene={{scene: ArenaGame}} navigateToHome={this.navigateToHome} viroAppProps={this.state.viroAppProps}/> 
       );
     } else {
       return (
         <View>
-          <Text>{JSON.stringify(this.props)}</Text>
+          <Text>{JSON.stringify(this.props.players)}</Text>
         </View>
       )
     }
@@ -63,7 +84,7 @@ class Game extends Component {
 
 const setStateToProps = (state) => {
   return ({
-    players: state.onGameData
+    players: state.onGameData.onGameData
   })
 }
 
