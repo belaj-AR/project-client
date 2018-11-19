@@ -75,7 +75,7 @@ export default class ArenaGame extends Component {
 
     this.setState({
       player1: {
-        name: 'Harles'
+        name: 'Harles' 
       },
       player2: {
         name: 'Bayu'
@@ -92,6 +92,9 @@ export default class ArenaGame extends Component {
   }
 
   attackPlayerOne = () => {
+
+    this.props.arSceneNavigator.viroAppProps.fn()
+
     let currentHP = Number(this.state.player1HP); 
     let damage = this.state.player2Dmg;
     if (currentHP - damage >= 0) {
@@ -197,7 +200,7 @@ export default class ArenaGame extends Component {
 
     return (
       <ViroNode 
-              position={[-4, 0, -14]} 
+              position={[-4, 0, -7]} 
               scale={[0.8, 0.8, 0.8]}
               animation={{name: "playerMove", run: true, loop: true}}
             >

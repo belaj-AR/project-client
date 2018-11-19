@@ -20,7 +20,9 @@ class Game extends Component {
       initAr: true,
       viroAppProps: 
       { 
-        players: this.props.players
+        players: this.props.players,
+        fn: () => this.props.navigation.navigate("Home")
+
       }
     }
 
@@ -68,7 +70,8 @@ class Game extends Component {
     if(this.state.initAr){
       return (
         <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
-          initialScene={{scene: ArenaGame}} navigateToHome={this.navigateToHome} viroAppProps={this.state.viroAppProps}/> 
+          initialScene={{scene: ArenaGame}} 
+          viroAppProps={{fn: () => this.props.navigation.navigate("Home")}}/> 
       );
     } else {
       return (
@@ -95,3 +98,5 @@ const setDispatchToProps = (dispatch) => {
 }
 
 export default connect(setStateToProps, setDispatchToProps)(Game)
+
+// viroAppProps={this.state.viroAppProps}
