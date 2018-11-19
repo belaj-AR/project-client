@@ -2,12 +2,14 @@ import config from '../../config'
 
 const { firebaseDB } = config
 
-export default ({ fname, email, avatar },key) => {
+export default ({ fname, email, avatar, win, lose },key) => {
   return (dispatch) => {
     firebaseDB.ref(`/Room/roomList/` + key +'/players/p2').set({
       fname ,
       email,
       avatar,
+      win : win.length,
+      lose : lose.length,
       monster: null
     }, err => {
     if (!err) {

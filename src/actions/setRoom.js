@@ -2,7 +2,7 @@ import config from '../../config'
 
 const { firebaseDB } = config
 
-export default ({ email, fname, avatar }, roomName) => {
+export default ({ email, fname, avatar, win, lose }, roomName) => {
   return (dispatch) => {
 
     let newKey = firebaseDB
@@ -19,6 +19,8 @@ export default ({ email, fname, avatar }, roomName) => {
           fname: fname ,
           email: email,
           avatar: avatar,
+          win : win.length,
+          lose : lose.length,
           monster: null
         }
       },

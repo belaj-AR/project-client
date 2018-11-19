@@ -26,6 +26,8 @@ export default (key) => {
           dispatch({type: 'SET_DATA_ROOM_BATTLE', payload: data})
         }
       });
+    } else {
+      dispatch({type: 'SET_DATA_ROOM_BATTLE', payload: null})
     }
   }
 };
