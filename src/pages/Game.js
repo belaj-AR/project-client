@@ -27,7 +27,7 @@ class Game extends Component {
   }
 
   componentDidMount = () => {
-    this.getToken()
+    // this.getToken()
   }
 
   getToken = async () => {
