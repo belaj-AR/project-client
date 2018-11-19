@@ -37,12 +37,17 @@ export default class ArenaGame extends Component {
       
       player1: {
         name: '',
-        status: false
+        status: false,
       },
+      player1HP: '100',
+      player1Dmg: '5',
+
       player2: {
         name: '',
-        status: false
+        status: false,
       },
+      player2HP: '100',
+      player2Dmg: '5',
 
       playerOne : {
         playerName: 'Harles',
@@ -84,6 +89,41 @@ export default class ArenaGame extends Component {
       });
     }, 7000)
 
+  }
+
+  attackPlayerOne = () => {
+    let currentHP = Number(this.state.player1HP); 
+    let damage = this.state.player2Dmg;
+    if (currentHP - damage >= 0) {
+      let newHP = String(currentHP - damage);
+      if (newHP < 0) {
+        this.setState({
+          player1HP: '0'
+        });
+      } else {
+        this.setState({
+          player1HP: newHP
+        });
+      }
+    }
+
+  }
+
+  attackPlayerTwo = () => {
+    let currentHP = Number(this.state.player2HP); 
+    let damage = this.state.player1Dmg;
+    if (currentHP - damage >= 0) {
+      let newHP = String(currentHP - damage);
+      if (newHP < 0) {
+        this.setState({
+          player2HP: '0'
+        });
+      } else {
+        this.setState({
+          player2HP: newHP
+        });
+      }
+    }
   }
 
   render() {
@@ -178,6 +218,7 @@ export default class ArenaGame extends Component {
                 position={[0, 2, 0]}
                 rotation={[0, 90, 0]}
                 scale={[0.3, 0.3, 0.3]}
+                onClick={this.attackPlayerOne}
                 type="VRX"
                 />
 
@@ -187,6 +228,13 @@ export default class ArenaGame extends Component {
                   <ViroText 
                     text={this.state.player1.name} 
                     scale={[.5, .5, .5]} 
+                    width={8} height={8}
+                    style={styles.playerNameStyle} />
+
+                  <ViroText 
+                    text={this.state.player1HP} 
+                    scale={[.5, .5, .5]}
+                    position={[0, -.5, 0]} 
                     width={8} height={8}
                     style={styles.playerNameStyle} />
 
@@ -342,6 +390,7 @@ export default class ArenaGame extends Component {
 //       position={[0, 2, 0]}
 //       rotation={[0, -90, 0]}
 //       scale={[0.3, 0.3, 0.3]}
+//        onClick={this.attackPlayerTwo}
 //       onLoadEnd={this.setPlayerLose}
 //       type="VRX"
 //       />
@@ -354,7 +403,15 @@ export default class ArenaGame extends Component {
 //           scale={[.5, .5, .5]} 
 //           width={8} height={8}
 //           style={styles.playerNameStyle} />
-
+//
+//            <ViroText 
+//            text={this.state.player2.hp} 
+//            scale={[.5, .5, .5]}
+//            position={[0, -.5, 0]} 
+//            width={8} height={8}
+//            style={styles.playerNameStyle} />
+//
+//
 //       </ViroNode>
 
 //     {/* <ViroSpatialSound
