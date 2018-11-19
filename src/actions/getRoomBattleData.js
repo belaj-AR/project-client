@@ -13,6 +13,7 @@ export default (key) => {
             host: snapshot.val().host,
             id: snapshot.val().id,
             roomName: snapshot.val().name,
+            onGameKey: snapshot.val().onGameKey || null,
             players: [],
             status: snapshot.val().status
           }
