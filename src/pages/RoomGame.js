@@ -8,6 +8,7 @@ import getRoomBattleData from '../actions/getRoomBattleData'
 import exitRoom from '../actions/exitRoom'
 import setPickMonster from '../actions/setPickMonster'
 import setOnGameData from '../actions/setOnGameData'
+import setKeyOnGamedata from '../actions/setKeyOnGamedata'
 
 class RoomGame extends Component {
 
@@ -15,7 +16,7 @@ class RoomGame extends Component {
     super(props)
 
     this.state = {
-      isGameAllowedToStart: false
+      generateOnGameKey: false
     }
   }
 
@@ -36,27 +37,32 @@ class RoomGame extends Component {
   
 
   roomChecker = () => {
-    let { dataRoomBattle } = this.props
+    let { dataRoomBattle, setKeyOnGamedata, roomId, currentUser } = this.props
 
     if (dataRoomBattle) {
       if (dataRoomBattle.players.length === 2) {
         if (dataRoomBattle.players[0].monster && dataRoomBattle.players[1].monster) {
+          if (!this.state.generateOnGameKey) {
+            if ( dataRoomBattle.host === currentUser.email) {
+              setKeyOnGamedata(roomId)
+              this.setState({
+                generateOnGameKey: true
+              })
+            }
+          }
           return true
         }
       }
     }
   }
 
-
-  fetchDataHero = () => {
-    
-  }
-
   playGame = () => {
 
     let { dataRoomBattle, setOnGameData, navigation , roomId} = this.props
+    
+    // alert(dataRoomBattle.onGameKey)
 
-    setOnGameData(dataRoomBattle.players, roomId)
+    setOnGameData(dataRoomBattle.players, roomId, dataRoomBattle.onGameKey)
     navigation.navigate('Game')
   }
 
@@ -114,7 +120,19 @@ class RoomGame extends Component {
                 user.email === currentUser.email &&
                 !user.monster &&
                   <FlatList
-                      data={[{element: 'fire'},{element: 'water'},{element: 'earth'}]}
+                      data={[{
+                        element: 'fire',
+                        health: 1000,
+                        dmg: 0
+                      },{
+                        element: 'water',
+                        health: 1000,
+                        dmg: 0
+                      },{
+                        element: 'earth',
+                        health: 1000,
+                        dmg: 0
+                      }]}
                       horizontal
                       renderItem={({item}) => (
                         <TouchableOpacity
@@ -219,7 +237,8 @@ const setDispatchToProps = (dispatch) => {
     getRoomBattleData: (key) => dispatch(getRoomBattleData(key)),
     exitRoom: (currentRoomId, currentUserEmail, structureDataPlayers) => dispatch(exitRoom(currentRoomId, currentUserEmail, structureDataPlayers)),
     setPickMonster: (currentRoomId, currentUserEmail, structureDataPlayers, monsterData) => dispatch(setPickMonster(currentRoomId, currentUserEmail, structureDataPlayers, monsterData)),
-    setOnGameData: (data, roomId) => dispatch(setOnGameData(data, roomId)),
+    setOnGameData: (data, roomId, onGameKey) => dispatch(setOnGameData(data, roomId, onGameKey)),
+    setKeyOnGamedata: (roomId) => dispatch(setKeyOnGamedata(roomId))
   })
 }
 
