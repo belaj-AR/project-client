@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import {View, Text} from 'react-native'
+import { connect } from 'react-redux'
 
-import Config from '../../config';
 var ArenaGame = require('../../js/ArenaGame');
-
-var sharedProps = {
-  apiKey: Config.API_KEY_VIRO,
-}
 
 import {
   ViroARSceneNavigator,
@@ -18,9 +14,25 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      sharedProps : sharedProps,
-      initAr: true
-    }
+      // initAr: false,
+      viroAppProps: { players: 
+        [
+          { name: 'Harles',
+            status: false,
+            monster: {
+              name: 'Red Dragon',
+              model: '',
+              texture: [] }},
+          {
+            name: 'Superman',
+            status: true,
+            monster: {
+              name: 'Blue Dragon',
+              model: '',
+              texture: [] }}
+        ]
+        }
+      }
 
   }
 
@@ -30,21 +42,33 @@ class Game extends Component {
 
   render(){
     
-    if(this.state.initAr){
+    // if(this.state.initAr){
       return (
         <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
-          initialScene={{scene: ArenaGame}} customNavigation={this.myNavigation}/> 
+          initialScene={{scene: ArenaGame}} myNavigation={() => this.myNavigation()} viroAppProps={this.state.viroAppProps}/> 
       );
-    } else {
-      return (
-        <View>
-          <Text>{JSON.stringify(this.props.navigation.navigate)}</Text>
-        </View>
-      )
-    }
+    // } else {
+    //   return (
+    //     <View>
+    //       <Text>BUAT TEST</Text>
+    //     </View>
+    //   )
+    // }
    
   }
 
 }
 
-export default Game
+const setStateToProps = (state) => {
+  return ({
+    
+  })
+}
+
+const setDispatchToProps = (dispatch) => {
+  return ({
+
+  })
+}
+
+export default connect(setStateToProps, setDispatchToProps)(Game)
