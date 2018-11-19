@@ -14,12 +14,13 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      // initAr: false,
+      initAr: false,
       viroAppProps: { players: 
         [
           { name: 'Harles',
             status: false,
             monster: {
+              water: 'fire',
               name: 'Red Dragon',
               model: '',
               texture: [] }},
@@ -27,6 +28,7 @@ class Game extends Component {
             name: 'Superman',
             status: true,
             monster: {
+              element: 'water',
               name: 'Blue Dragon',
               model: '',
               texture: [] }}
@@ -42,18 +44,18 @@ class Game extends Component {
 
   render(){
     
-    // if(this.state.initAr){
+    if(this.state.initAr){
       return (
         <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
           initialScene={{scene: ArenaGame}} myNavigation={() => this.myNavigation()} viroAppProps={this.state.viroAppProps}/> 
       );
-    // } else {
-    //   return (
-    //     <View>
-    //       <Text>BUAT TEST</Text>
-    //     </View>
-    //   )
-    // }
+    } else {
+      return (
+        <View>
+          <Text>{JSON.stringify(this.props)}</Text>
+        </View>
+      )
+    }
    
   }
 
@@ -61,7 +63,7 @@ class Game extends Component {
 
 const setStateToProps = (state) => {
   return ({
-    
+    players: state.onGameData
   })
 }
 

@@ -18,18 +18,23 @@ export default function (currentRoomId, currentUserEmail, structureDataPlayers) 
     }
 
     if (!isPlayerHost) {
-      firebaseDB.ref(`/Room/roomList/` + currentRoomId + '/players').set(
-      {
-        p1: {
-          fname: structureDataPlayers[0].fname,
-          email: structureDataPlayers[0].email,
-          avatar: structureDataPlayers[0].avatar,
-          monster: structureDataPlayers[0].monster || null
-        }
-      })
+      firebaseDB.ref(`/Room/roomList/` + currentRoomId + '/players/p2').remove()
       dispatch({type: 'SET_ROOM_ID', payload: null})
     } else {
-      firebaseDB.ref(`/Room/roomList/` + currentRoomId).remove()
+      if (structureDataPlayers.length === 2) {
+        firebaseDB.ref(`/Room/roomList/` + currentRoomId + '/players/p1').set({
+          avatar: structureDataPlayers[1].avatar,
+          email: structureDataPlayers[1].email,
+          fname: structureDataPlayers[1].fname,
+          monster: structureDataPlayers[1].monster || null,
+          lose: structureDataPlayers[1].lose,
+          win: structureDataPlayers[1].win
+        })
+        firebaseDB.ref(`/Room/roomList/` + currentRoomId + '/host').set(structureDataPlayers[1].email)
+        firebaseDB.ref(`/Room/roomList/` + currentRoomId + '/players/p2').remove()
+      } else {
+        firebaseDB.ref(`/Room/roomList/` + currentRoomId).remove()
+      }
     }
   }
 }

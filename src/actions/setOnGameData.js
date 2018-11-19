@@ -1,4 +1,8 @@
-export default function (dataPlayerOnline) {
+import config from '../../config'
+
+const { firebaseDB } = config
+
+export default function (dataPlayerOnline, key) {
 
   return function (dispatch) {
 
@@ -41,7 +45,9 @@ export default function (dataPlayerOnline) {
         dataPlayer[1].status = null
       }
     }
+    dataPlayer[2] = key
     dispatch({ type: 'SET_ON_GAME_DATA', payload: dataPlayer })
-  }
 
+    firebaseDB.ref(`/Room/roomList/` + key + '/status').set('On Game')
+  }
 }

@@ -28,11 +28,12 @@ class RoomGame extends Component {
     getRoomBattleData(roomId)
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = (nextProps, nextState) => {
     if (this.props.roomId === null || this.props.dataRoomBattle === null)  {
       this.props.navigation.navigate('Lobby')
     }
   }
+  
 
   roomChecker = () => {
     let { dataRoomBattle } = this.props
@@ -46,11 +47,16 @@ class RoomGame extends Component {
     }
   }
 
+
+  fetchDataHero = () => {
+    
+  }
+
   playGame = () => {
 
-    let { dataRoomBattle, setOnGameData, navigation } = this.props
+    let { dataRoomBattle, setOnGameData, navigation , roomId} = this.props
 
-    setOnGameData(dataRoomBattle.players)
+    setOnGameData(dataRoomBattle.players, roomId)
     navigation.navigate('Game')
   }
 
@@ -72,6 +78,13 @@ class RoomGame extends Component {
 
     return (
       <View style={containerStyle}>
+
+        {
+          dataRoomBattle &&
+          <Text>
+            { JSON.stringify(this.props.dataRoomBattle) }
+          </Text>
+        }
         {
           dataRoomBattle &&
             dataRoomBattle.players.map((user, idx) => 
@@ -85,8 +98,8 @@ class RoomGame extends Component {
 
                 <View>
                   <Text style={userTextStyle}>{user.fname}</Text>
-                  <Text style={userTextStyle}>{'WIN  : ' + '10'}</Text>
-                  <Text style={userTextStyle}>{'LOSE : ' + '10'}</Text>
+                  <Text style={userTextStyle}>{'WIN  : ' + user.win}</Text>
+                  <Text style={userTextStyle}>{'LOSE : ' + user.lose}</Text>
                 </View>
               </View>
             </View>
@@ -206,8 +219,9 @@ const setDispatchToProps = (dispatch) => {
     getRoomBattleData: (key) => dispatch(getRoomBattleData(key)),
     exitRoom: (currentRoomId, currentUserEmail, structureDataPlayers) => dispatch(exitRoom(currentRoomId, currentUserEmail, structureDataPlayers)),
     setPickMonster: (currentRoomId, currentUserEmail, structureDataPlayers, monsterData) => dispatch(setPickMonster(currentRoomId, currentUserEmail, structureDataPlayers, monsterData)),
-    setOnGameData: (data) => dispatch(setOnGameData(data))
+    setOnGameData: (data, roomId) => dispatch(setOnGameData(data, roomId)),
   })
 }
 
 export default connect(setStateToProps,setDispatchToProps)(RoomGame)
+ 
