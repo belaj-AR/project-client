@@ -82,6 +82,7 @@ class ModalComp extends Component {
       BoxButtonRegister,
       paddingInner,
       contentArea,
+      titleModal,
       buttonTextRegisterStyle
     } = styles
 
