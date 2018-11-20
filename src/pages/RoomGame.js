@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import  { View,Text, Image, FlatList, TouchableOpacity } from 'react-native'
+import  { View,Text, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 
 import ButtonComp from '../components/Button'
 
 import getRoomBattleData from '../actions/getRoomBattleData'
+import getMonsterList from '../actions/getMonsterList'
 import exitRoom from '../actions/exitRoom'
 import setPickMonster from '../actions/setPickMonster'
 import setOnGameData from '../actions/setOnGameData'
@@ -20,12 +21,16 @@ class RoomGame extends Component {
     }
   }
 
-  componentDidMount = () => {
-    let { roomId, getRoomBattleData } = this.props
+  componentDidMount = async () => {
+    let { roomId, getRoomBattleData, getMonsterList } = this.props
 
     if (roomId === null)  {
       this.props.navigation.navigate('Lobby')
     }
+
+    let token = await AsyncStorage.getItem('token')
+
+    getMonsterList(token)
     getRoomBattleData(roomId)
   }
 
@@ -80,7 +85,7 @@ class RoomGame extends Component {
              BoxButtonPlayGame,
              buttonTextPlayGameStyle} = styles
 
-    const { dataRoomBattle, currentUser } = this.props
+    const { dataRoomBattle, currentUser, monsterList } = this.props
 
     return (
       <View style={containerStyle}>
@@ -118,38 +123,27 @@ class RoomGame extends Component {
             dataRoomBattle.players.map((user, idx) => {
               return (
                 user.email === currentUser.email &&
-                !user.monster &&
-                  <FlatList
-                      data={[{
-                        element: 'fire',
-                        health: 1000,
-                        dmg: 0
-                      },{
-                        element: 'water',
-                        health: 1000,
-                        dmg: 0
-                      },{
-                        element: 'earth',
-                        health: 1000,
-                        dmg: 0
-                      }]}
-                      horizontal
-                      renderItem={({item}) => (
-                        <TouchableOpacity
-                          onPress={() => this.props.setPickMonster(this.props.roomId, currentUser.email, dataRoomBattle.players, item)}
-                        >
-                          <View style={{
-                            height: 50,
-                            width: 50,
-                            borderRadius: 10,
-                            backgroundColor: 'black',
-                            margin: 5
-                          }}>
+                  !user.monster &&
+                    monsterList &&
+                      <FlatList
+                          data={monsterList}
+                          horizontal
+                          renderItem={({item}) => (
+                            <TouchableOpacity
+                              onPress={() => this.props.setPickMonster(this.props.roomId, currentUser.email, dataRoomBattle.players, item)}
+                            >
+                              <View style={{
+                                height: 50,
+                                width: 50,
+                                borderRadius: 10,
+                                backgroundColor: 'black',
+                                margin: 5
+                              }}>
 
-                          </View>
-                        </TouchableOpacity>
-                      )}
-                    />
+                              </View>
+                            </TouchableOpacity>
+                          )}
+                      />
               )
             })
           }
@@ -228,13 +222,15 @@ const setStateToProps = (state) => {
     roomId: state.roomId.roomId,
     dataRoomBattle: state.dataRoomBattle.dataRoomBattle,
     currentUser: state.currentUser.currentUser,
-    dataRoom: state.dataRoom.dataRoom
+    dataRoom: state.dataRoom.dataRoom,
+    monsterList: state.monsterList.monsterList
   })
 }
 
 const setDispatchToProps = (dispatch) => {
   return({
     getRoomBattleData: (key) => dispatch(getRoomBattleData(key)),
+    getMonsterList: (token) => dispatch(getMonsterList(token)),
     exitRoom: (currentRoomId, currentUserEmail, structureDataPlayers) => dispatch(exitRoom(currentRoomId, currentUserEmail, structureDataPlayers)),
     setPickMonster: (currentRoomId, currentUserEmail, structureDataPlayers, monsterData) => dispatch(setPickMonster(currentRoomId, currentUserEmail, structureDataPlayers, monsterData)),
     setOnGameData: (data, roomId, onGameKey) => dispatch(setOnGameData(data, roomId, onGameKey)),

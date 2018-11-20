@@ -46,6 +46,11 @@ export default function (dataPlayerOnline, roomKey, onGameKey) {
       }
     }
 
+    dataPlayer[0].monster.health = 500
+    dataPlayer[1].monster.health = 500
+    dataPlayer[0].monster.pos = [0,0,0]
+    dataPlayer[1].monster.pos = [0,0,0]
+
     firebaseDB.ref(`/OnGame/onGameList/` + onGameKey).set({
       gameId: onGameKey,
       roomId: roomKey,

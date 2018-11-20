@@ -4,7 +4,6 @@ const { firebaseDB } = config
 
 export default (key) => {
   return (dispatch) => {
-    alert('masuk room')
     if (key) {
       firebaseDB.ref('Room/roomList/'+ key).on('value', function(snapshot) {
 
