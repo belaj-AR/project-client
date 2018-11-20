@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import {View, Text, AsyncStorage} from 'react-native'
 import { connect } from 'react-redux'
-import  axios from 'axios'
-import config from '../../config'
-const { ngrokTunnel } = config
+import   axios from 'axios'
+import   config from '../../config'
+const { ngrokTunnel, firebaseDB } = config
 
+import resetGame from '../actions/resetGame'
 var ArenaGame = require('../../js/ArenaGame');
 
 import {
@@ -18,19 +19,21 @@ class Game extends Component {
 
     this.state = {
       initAr: true,
-      viroAppProps: 
-      { 
-        players: this.props.players,
-        fn: () => this.props.navigation.navigate("Home")
-
-      }
     }
 
   }
 
-  componentDidMount = () => {
-    // this.getToken()
+  
+  attack = (gameId, playersTargetNumber, dmg, remainingHealth) => {
+    let newHealth = remainingHealth - dmg
+  
+    if (newHealth < 0) {
+      newHealth = 0
+    }
+
+    firebaseDB.ref(`/OnGame/onGameList/` + gameId + '/' + playersTargetNumber + '/monster/health').set(newHealth)
   }
+
 
   getToken = async () => {
     let token = await AsyncStorage.getItem('token')
@@ -61,8 +64,8 @@ class Game extends Component {
     .catch((err) => {});
   }
 
-  navigateToHome = () => {
-    return this.props.navigation.navigate("Home")
+  resetData = () => {
+    this.props.resetGame(this.props.players.roomId , this.props.players.gameId)
   }
 
   render(){
@@ -71,7 +74,11 @@ class Game extends Component {
       return (
         <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
           initialScene={{scene: ArenaGame}} 
-          viroAppProps={{fn: () => this.props.navigation.navigate("Home")}}/> 
+          viroAppProps={{ propsFromGame: {
+                            fn: () => this.props.navigation.navigate("Home"),
+                            players: this.props.players,
+                            resetData: () => this.resetData()
+                        }}}/> 
       );
     } else {
       return (
@@ -93,7 +100,7 @@ const setStateToProps = (state) => {
 
 const setDispatchToProps = (dispatch) => {
   return ({
-
+    resetGame: (currentRoomId, onGameKey) => dispatch(resetGame(currentRoomId, onGameKey))
   })
 }
 
