@@ -6,6 +6,7 @@ import   config from '../../config'
 const { ngrokTunnel, firebaseDB } = config
 
 import resetGame from '../actions/resetGame'
+import getCurrentUser from '../actions/getCurrentUser'
 var ArenaGame = require('../../js/ArenaGame');
 
 import {
@@ -23,31 +24,18 @@ class Game extends Component {
 
   }
 
+  // attack = (gameId, playersTargetNumber, dmg, remainingHealth) => {
+  //   let newHealth = remainingHealth - dmg
   
-  attack = (gameId, playersTargetNumber, dmg, remainingHealth) => {
-    let newHealth = remainingHealth - dmg
-  
-    if (newHealth < 0) {
-      newHealth = 0
-    }
+  //   if (newHealth < 0) {
+  //     newHealth = 0
+  //   }
 
-    firebaseDB.ref(`/OnGame/onGameList/` + gameId + '/' + playersTargetNumber + '/monster/health').set(newHealth)
-  }
+  //   firebaseDB.ref(`/OnGame/onGameList/` + gameId + '/' + playersTargetNumber + '/monster/health').set(newHealth)
+  // }
 
-
-  getToken = async () => {
+  setTheWinner = async (playerWinner, playerLoser) => {
     let token = await AsyncStorage.getItem('token')
-
-    let winner = ''
-    let loser = ''
-
-    if(this.props.players[0].status === true){
-      winner = this.props.players[0].id
-      loser = this.props.players[1].id
-    } else {
-      winner = this.props.players[1].id
-      loser = this.props.players[0].id
-    }
 
     axios({
       method: 'POST',
@@ -56,11 +44,13 @@ class Game extends Component {
         token : token
       },
       data: {
-        winner: winner,
-        loser: loser
+        winner: playerWinner,
+        loser: playerLoser
       }
     })
-    .then((result) => {})
+    .then((result) => {
+      this.props.getCurrentUser(token)
+    })
     .catch((err) => {});
   }
 
@@ -69,27 +59,17 @@ class Game extends Component {
   }
 
   render(){
-    
-    if(this.state.initAr){
-      return (
-        <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
-          initialScene={{scene: ArenaGame}} 
-          viroAppProps={{ propsFromGame: {
-                            fn: () => this.props.navigation.navigate("Home"),
-                            players: this.props.players,
-                            resetData: () => this.resetData()
-                        }}}/> 
-      );
-    } else {
-      return (
-        <View>
-          <Text>{JSON.stringify(this.props.players)}</Text>
-        </View>
-      )
-    }
-   
+    return (
+      <ViroARSceneNavigator  apiKey="BE16B1BD-2F4A-476E-951C-E0F585666BAB"
+        initialScene={{scene: ArenaGame}} 
+        viroAppProps={{ propsFromGame: {
+                          players: this.props.players,
+                          fn: () => this.props.navigation.navigate("Home"),
+                          setTheWinner: (playerWinner, playerLoser) => this.setTheWinner(playerWinner, playerLoser),
+                          resetData: () => this.resetData()
+                      }}}/> 
+    );
   }
-
 }
 
 const setStateToProps = (state) => {
@@ -100,10 +80,11 @@ const setStateToProps = (state) => {
 
 const setDispatchToProps = (dispatch) => {
   return ({
-    resetGame: (currentRoomId, onGameKey) => dispatch(resetGame(currentRoomId, onGameKey))
+    resetGame: (currentRoomId, onGameKey) => dispatch(resetGame(currentRoomId, onGameKey)),
+    getCurrentUser: (token) => dispatch(getCurrentUser(token))
   })
 }
 
 export default connect(setStateToProps, setDispatchToProps)(Game)
 
-// viroAppProps={this.state.viroAppProps}
+// fn: () => this.props.navigation.navigate("Home"),
