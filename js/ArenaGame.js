@@ -38,17 +38,21 @@ export default class ArenaGame extends Component {
       playerReady: false,
       portalSound: false,
       
-      
+      player1Id: '',
       player1Name: '',
-      player1HP: '100',
-      player1Dmg: '5',
-      player1Position: [-4, 0, -3],
+      player1HP: '',
+      player1Dmg: '100',
+      player1Position: [-4.3, 0, -5],
       player1Status: false,
 
+      player2Id: '',
       player2Name: '',
-      player2HP: '100',
-      player2Dmg: '5',
+      player2HP: '',
+      player2Dmg: '100',
+      player2Position: [4.3, 0, -5],
       player2Status: false,
+
+      statusWinner: '',
 
       playerOne : {
         playerName: 'Harles',
@@ -73,7 +77,6 @@ export default class ArenaGame extends Component {
   }
 
   onloadPlayerEnd = () => {
-
     this.setState({
       player1Name: this.props.arSceneNavigator.viroAppProps.propsFromGame.players.p1.fname,
       player2Name: this.props.arSceneNavigator.viroAppProps.propsFromGame.players.p2.fname
@@ -86,63 +89,119 @@ export default class ArenaGame extends Component {
   }
 
   attackPlayerOne = () => {
+
     let newPosition = [
       this.getRandomNumberBetween(-7,7),
       this.getRandomNumberBetween(-7,7),
       this.getRandomNumberBetween(-3,4)
     ];
 
-    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
-      this.setState({
-        player1Name: snapshot.val().p1.fname,
-        player2Name: snapshot.val().p2.fname
-      })
-    });
-
-
-
     let currentHP = Number(this.state.player1HP); 
     let damage = this.state.player2Dmg;
     if (currentHP - damage >= 0) {
       let newHP = String(currentHP - damage);
       if (newHP < 0) {
-        this.setState({
-          player1HP: '0',
-          player1Position: newPosition
-        });
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p1/monster').update({
+            health: 0,
+            position: newPosition,
+        })
+
+        firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+          status: "gameEnd"
+        })
+  
       } else {
-        this.setState({
-          player1HP: newHP,
-          player1Position: newPosition
-        });
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p1/monster').update({
+          health: newHP,
+          position: newPosition
+        })
+
       }
     } else {
-      this.props.arSceneNavigator.viroAppProps.fn()
-      this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
-      this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+      firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+        status: "gameEnd"
+      })
     }
 
   }
 
   attackPlayerTwo = () => {
+
+
+    let newPosition = [
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-3,4)
+    ];
+
     let currentHP = Number(this.state.player2HP); 
     let damage = this.state.player1Dmg;
     if (currentHP - damage >= 0) {
       let newHP = String(currentHP - damage);
       if (newHP < 0) {
-        this.setState({
-          player2HP: '0'
-        });
+
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p2/monster').update({
+          health: 0,
+          position: newPosition      
+        })
+
+        firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+          status: "gameEnd"
+        })
+ 
       } else {
-        this.setState({
-          player2HP: newHP
-        });
+      
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p2/monster').update({
+            health: newHP,
+            position: newPosition
+        })
+       
       }
     } else {
-      this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
-      this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+      firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+        status: "gameEnd"
+      })
     }
   }
+
+  actionAfterLoadPortal = () => {
+   
+    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
+      this.setState({
+        portalSound : false, 
+        getStarted : false,
+        player1Id: snapshot.val().p1.id,
+        player2Id: snapshot.val().p2.id
+      })
+    })
+  
+
+    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).on('value', (snapshot) => {
+      
+      // if (snapshot.val() !== null) {
+        if (snapshot.val().status === "gameEnd" && String(snapshot.val().p1.monster.health) === "0"){
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player2Id, this.state.player1Id)
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+          // this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
+        } else if (snapshot.val().status === "gameEnd" &&  String(snapshot.val().p2.monster.health) === "0") {
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player1Id, this.state.player2Id)
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+          // this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
+        }
+
+        this.setState({
+          player1HP: String(snapshot.val().p1.monster.health),
+          player2HP: String(snapshot.val().p2.monster.health),
+        });
+      // } else {
+      //   this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+      // }
+
+    });
+ 
+  }
+
+
 
   render() {
 
@@ -156,7 +215,7 @@ export default class ArenaGame extends Component {
             visible={this.state.getStarted}
           >
             <ViroText 
-              text={this.state.welcomeText} 
+              text={this.state.welcomeText}
               position={[0,.09,0]}
               scale={[.1, .1, .1]} 
               width={2} height={2}
@@ -182,18 +241,11 @@ export default class ArenaGame extends Component {
   }
 
 
-  actionAfterLoadPortal = () => {
-    this.setState({
-      portalSound : false, 
-      getStarted : false,
-    })
-  }
-
  loadPortal = () => {
 
     return (
         <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, -1]} scale={[.4, .4, .4]}>
+            <ViroPortal position={[0, 0, 0]} scale={[.5, .5, .5]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
@@ -383,7 +435,7 @@ export default class ArenaGame extends Component {
   
   return (
   <ViroNode 
-    position={[4, 0, -14]} 
+    position={this.state.player2Position} 
     scale={[0.8, 0.8, 0.8]}
     animation={{name: "playerMove", run: true, loop: true}}
   >
@@ -496,25 +548,6 @@ export default class ArenaGame extends Component {
   )          
 
  }
-
-
-// summonDragons = () => {
-//   setTimeout( () => {
-//     this.setState({
-//       summonDragons: true
-//     });
-//   }, 10000)
-// }
-
-// _onInitialized(state, reason) {
-//   if (state == ViroConstants.TRACKING_NORMAL) {
-//     this.setState({
-//       text : "Summoning dragons.."
-//     });
-//   } else if (state == ViroConstants.TRACKING_NONE) {
-//     // Handle loss of tracking
-//   }
-// }
 
 
 }
