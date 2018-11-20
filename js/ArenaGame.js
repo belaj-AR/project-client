@@ -25,7 +25,7 @@ export default class ArenaGame extends Component {
     super(props);
 
     this.state = {
-      welcomeText: "TOUCH SHIELD BELOW",
+      welcomeText: "touch the magical shield below",
       message : "PREPARING ARENA",
 
       getStarted: true,
@@ -41,6 +41,7 @@ export default class ArenaGame extends Component {
       },
       player1HP: '100',
       player1Dmg: '5',
+      player1Position: [-4, 0, -3],
 
       player2: {
         name: '',
@@ -91,9 +92,16 @@ export default class ArenaGame extends Component {
 
   }
 
-  attackPlayerOne = () => {
+  getRandomNumberBetween = (min, max) => {
+    return Math.floor(Math.random()*(max-min+1)+min);
+  }
 
-    this.props.arSceneNavigator.viroAppProps.fn()
+  attackPlayerOne = () => {
+    let newPosition = [
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-3,4)
+    ];
 
     let currentHP = Number(this.state.player1HP); 
     let damage = this.state.player2Dmg;
@@ -101,13 +109,17 @@ export default class ArenaGame extends Component {
       let newHP = String(currentHP - damage);
       if (newHP < 0) {
         this.setState({
-          player1HP: '0'
+          player1HP: '0',
+          player1Position: newPosition
         });
       } else {
         this.setState({
-          player1HP: newHP
+          player1HP: newHP,
+          player1Position: newPosition
         });
       }
+    } else {
+      this.props.arSceneNavigator.viroAppProps.fn()
     }
 
   }
@@ -153,7 +165,7 @@ export default class ArenaGame extends Component {
               source={require('./res/start_game/Wonder_Woman_V_Shield.obj')}
               resources={[require('./res/start_game/Wonder_Woman_V_Shield.mtl')]}
               scale={[.2, .2, .2]}
-              onClick={() => this.setState({playerReady: true, portalSound: true, welcomeText: 'OPENING GAME PORTAL'})}
+              onClick={() => this.setState({playerReady: true, portalSound: true, welcomeText: 'OPENING THE PORTAL'})}
               type="OBJ" />
           </ViroNode>
 
@@ -200,7 +212,7 @@ export default class ArenaGame extends Component {
 
     return (
       <ViroNode 
-              position={[-4, 0, -7]} 
+              position={this.state.player1Position} 
               scale={[0.8, 0.8, 0.8]}
               animation={{name: "playerMove", run: true, loop: true}}
             >
@@ -218,7 +230,7 @@ export default class ArenaGame extends Component {
                             require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
                             require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
                             require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-                position={[0, 2, 0]}
+                position={[0,2,0]}
                 rotation={[0, 90, 0]}
                 scale={[0.3, 0.3, 0.3]}
                 onClick={this.attackPlayerOne}
