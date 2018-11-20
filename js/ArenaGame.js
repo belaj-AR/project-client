@@ -92,15 +92,6 @@ export default class ArenaGame extends Component {
       this.getRandomNumberBetween(-3,4)
     ];
 
-    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
-      this.setState({
-        player1Name: snapshot.val().p1.fname,
-        player2Name: snapshot.val().p2.fname
-      })
-    });
-
-
-
     let currentHP = Number(this.state.player1HP); 
     let damage = this.state.player2Dmg;
     if (currentHP - damage >= 0) {
@@ -111,6 +102,11 @@ export default class ArenaGame extends Component {
           player1Position: newPosition
         });
       } else {
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}/p1`).set({
+          monster: {
+            health: newHP
+          },
+        })
         this.setState({
           player1HP: newHP,
           player1Position: newPosition
@@ -130,6 +126,11 @@ export default class ArenaGame extends Component {
     if (currentHP - damage >= 0) {
       let newHP = String(currentHP - damage);
       if (newHP < 0) {
+        firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}/p2`).set({
+          monster: {
+            health: newHP
+          },
+        })
         this.setState({
           player2HP: '0'
         });
@@ -143,6 +144,36 @@ export default class ArenaGame extends Component {
       this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
     }
   }
+
+  // listeningData = () => {
+    
+  // }
+
+  // componentDidMount = () => {
+
+  //   this.setState({
+  //     player1Name: 'MANTAP',
+  //     player2Name: 'DEMONG'
+  //   })
+
+  // }
+
+  // componentDidMount = () => {
+  //   setInterval(() => { 
+  //     firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).on('value', (snapshot) => {
+  //       this.setState({
+  //         player1Name: snapshot.val().p1.fname,
+  //         player2Name: snapshot.val().p2.fname
+  //       })
+  //     });
+  //   }, 500);
+  // }
+
+  // componentDidMount = () => {
+
+  //   setInterval()
+
+  // }
 
   render() {
 
@@ -193,7 +224,7 @@ export default class ArenaGame extends Component {
 
     return (
         <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, -1]} scale={[.4, .4, .4]}>
+            <ViroPortal position={[0, 0, 0]} scale={[.5, .5, .5]}>
               <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                 resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                             require('./res/portal_res/portal_ship/portal_ship_normal.png'),
