@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import  { View,Text, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
+import  { View,Text, Image, FlatList, TouchableOpacity, AsyncStorage, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 
 import ButtonComp from '../components/Button'
@@ -17,7 +17,9 @@ class RoomGame extends Component {
     super(props)
 
     this.state = {
-      generateOnGameKey: false
+      generateOnGameKey: false,
+      isUserWasPickAMonster: false,
+      selectedMonster: null
     }
   }
 
@@ -51,7 +53,7 @@ class RoomGame extends Component {
             if ( dataRoomBattle.host === currentUser.email) {
               setKeyOnGamedata(roomId)
               this.setState({
-                generateOnGameKey: true
+                generateOnGameKey: true,
               })
             }
           }
@@ -61,11 +63,20 @@ class RoomGame extends Component {
     }
   }
 
-  playGame = () => {
+  changeSelectedMonster(monster) {
+    this.setState({
+      selectedMonster: monster
+    })
+  }
 
+  changeUserPickedMonster() {
+    this.setState({
+      isUserWasPickAMonster: true
+    })
+  }
+
+  playGame = () => {
     let { dataRoomBattle, setOnGameData, navigation , roomId} = this.props
-    
-    // alert(dataRoomBattle.onGameKey)
 
     setOnGameData(dataRoomBattle.players, roomId, dataRoomBattle.onGameKey)
     navigation.navigate('Game')
@@ -83,87 +94,218 @@ class RoomGame extends Component {
              userAvatar,
              userTextStyle,
              BoxButtonPlayGame,
+             BoxButtonSelectMonster,
+             monsterAvatar,
+             monsterSelectedAvatar,
              buttonTextPlayGameStyle} = styles
 
-    const { dataRoomBattle, currentUser, monsterList } = this.props
+    const { dataRoomBattle, currentUser, monsterList, setPickMonster, roomId } = this.props
+    const { isUserWasPickAMonster, selectedMonster } = this.state
 
     return (
       <View style={containerStyle}>
-
-        {
-          dataRoomBattle &&
-          <Text>
-            { JSON.stringify(this.props.dataRoomBattle) }
-          </Text>
-        }
-        {
-          dataRoomBattle &&
-            dataRoomBattle.players.map((user, idx) => 
-            <View key={idx} style={cardContainer}>
-              <View style={userStyle}>
-                <View style={{
-                  marginRight:5
-                }}>
-                  <Image style={userAvatar} source={{uri: user.avatar}}/>
-                </View>
-
-                <View>
-                  <Text style={userTextStyle}>{user.fname}</Text>
-                  <Text style={userTextStyle}>{'WIN  : ' + user.win}</Text>
-                  <Text style={userTextStyle}>{'LOSE : ' + user.lose}</Text>
-                </View>
-              </View>
-            </View>
-          )
-        }
         <View style={{
-          flexDirection: 'row'
+          flex: .6,
         }}>
-          { dataRoomBattle &&
-            dataRoomBattle.players.map((user, idx) => {
-              return (
-                user.email === currentUser.email &&
-                  !user.monster &&
-                    monsterList &&
-                      <FlatList
-                          data={monsterList}
-                          horizontal
-                          renderItem={({item}) => (
-                            <TouchableOpacity
-                              onPress={() => this.props.setPickMonster(this.props.roomId, currentUser.email, dataRoomBattle.players, item)}
-                            >
-                              <View style={{
-                                height: 50,
-                                width: 50,
-                                borderRadius: 10,
-                                backgroundColor: 'black',
-                                margin: 5
-                              }}>
+        <View style={{
+          flex: 1,
+          margin: 10
+        }}>
+          {
+            dataRoomBattle &&
+              <FlatList
+                data={dataRoomBattle.players}
+                renderItem={({item}) => (
+                  <View style={userStyle}>
+                    <View style={{
+                      marginRight:5
+                    }}>
+                      <Image style={userAvatar} source={{uri: item.avatar}}/>
+                    </View>
 
-                              </View>
-                            </TouchableOpacity>
-                          )}
-                      />
-              )
-            })
+                    <View style={{
+                      justifyContent: 'center'
+                    }}>
+                      <Text style={userTextStyle}>{ item.fname }</Text>
+                      <Text style={userTextStyle}>{'WIN  : ' + item.win}</Text>
+                      <Text style={userTextStyle}>{'LOSE : ' + item.lose}</Text>
+                    </View>
+                  </View>
+                )}
+              />
           }
         </View>
+        
+        </View>
+        <View style={{
+          flex: .4,
+          backgroundColor: '#1D65A6',
+          borderRadius: 10,
+          marginLeft: 10,
+          marginRight: 10,
+          padding: 10
+        }}>
+          <View
+            style={{
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: '#192E5B',
+              justifyContent: 'center'
+            }}
+          > 
+            {
+              !isUserWasPickAMonster ?
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: '700'
+                  }}
+                >
+                  Select Your monster :
+                </Text>
+              :
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: '700'
+                }}
+              >
+                You pick { selectedMonster.name } as your monster
+              </Text>
+            }
+            { dataRoomBattle &&
+              !isUserWasPickAMonster ?
+                dataRoomBattle.players.map((user, idx) => {
+                  return (
+                    user.email === currentUser.email &&
+                      !user.monster &&
+                        monsterList &&
+                          <FlatList
+                              data={monsterList}
+                              horizontal
+                              showsHorizontalScrollIndicator={false}
+                              renderItem={({item}) => (
+                                <TouchableOpacity
+                                  onPress={() => this.changeSelectedMonster(item)}
+                                >
+                                  <View style={{
+                                    height: 70,
+                                    width: 70,
+                                    marginTop: 10,
+                                    borderRadius: 10,
+                                    backgroundColor: 'white',
+                                    margin: 5
+                                  }}>
+                                    <Image style={monsterAvatar} source={{uri: item.image}}/>
+                                  </View>
+                                </TouchableOpacity>
+                              )}
+                          />
+                  )
+                })
+              :
+                dataRoomBattle &&
+                  <View
+                    style={{
+                      height: Dimensions.get('window').height * 0.199,
+                      marginTop: 10,
+                      padding: 5
+                    }}
+                  >
+                    <View style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'row'
+                    }}>
+                      <View style={{
+                        flex: .5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        {
+                          dataRoomBattle.players[0] &&
+                            dataRoomBattle.players[0].monster ?
+                              <Image style={{
+                                width: 110,
+                                height: 110,
+                                borderRadius: 10,
+                              }} source={{uri: dataRoomBattle.players[0].monster.image}}/>
+                            :
+                              <Image style={{
+                                width: 110,
+                                height: 110,
+                                borderRadius: 10,
+                              }} source={{uri: dataRoomBattle.players[0].avatar}}/>
+                        }
+                      </View>
+                      <View style={{
+                        flex: .5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        {
+                          dataRoomBattle.players[1] &&
+                            dataRoomBattle.players[1].monster ?
+                              <Image style={{
+                                width: 110,
+                                height: 110,
+                                borderRadius: 10,
+                              }} source={{uri: dataRoomBattle.players[1].monster.image}}/>
+                            :
+                              dataRoomBattle &&
+                                dataRoomBattle.players[1] &&
+                                  dataRoomBattle.players[1].avatar &&
+                                    <Image style={{
+                                      width: 110,
+                                      height: 110,
+                                      borderRadius: 10,
+                                    }} source={{uri: dataRoomBattle.players[1].avatar}}/>
+                        }
+                      </View>
+                    </View>
+                  </View>
+            }
+          </View>
+          <View
+            style={{
+              flex: .3
+            }}
+          >
+            {
+              selectedMonster ?
+                !isUserWasPickAMonster &&
+                  <ButtonComp 
+                    style={BoxButtonSelectMonster} 
+                    styleText={buttonTextPlayGameStyle}
+                    fn={() => {
+                      setPickMonster(roomId, currentUser.email, dataRoomBattle.players, selectedMonster)
+                      this.changeUserPickedMonster()
+                    }}
+                    title='Select monster'/>
+              : 
+                <ButtonComp 
+                  style={BoxButtonSelectMonster} 
+                  styleText={buttonTextPlayGameStyle}
+                  fn={() => {}}
+                  title='Pick Your monster'/>
+            }
+          </View>
+        </View>
 
+        <View style={cardContainer}>
         {
           this.roomChecker() &&
-            <View style={cardContainer}>
-              <ButtonComp 
-                style={BoxButtonPlayGame} 
-                styleText={buttonTextPlayGameStyle} 
-                fn={() => this.playGame()} 
-                title='START GAME'/>
-            </View>
+            <ButtonComp 
+              style={BoxButtonPlayGame} 
+              styleText={buttonTextPlayGameStyle} 
+              fn={() => this.playGame()} 
+              title='START GAME'/>
         }
-        <View style={cardContainer}>
           <ButtonComp 
             style={BoxButtonPlayGame} 
             styleText={buttonTextPlayGameStyle}
-            fn={() => this.exitRoom(this.props.roomId, currentUser.email, dataRoomBattle.players)}
+            fn={() => this.exitRoom(roomId, currentUser.email, dataRoomBattle.players)}
             title='Exit'/>
         </View>
         
@@ -172,41 +314,64 @@ class RoomGame extends Component {
   }
 }
 
-
-
 const styles = {
   containerStyle: {
     flex: 1,
     backgroundColor: '#72A2C0',
-    justifyContent: "center",
   },
   cardContainer: {
+    justifyContent: 'flex-end',
+    flex:.3,
     marginTop: 5,
     marginLeft: 10,
     marginRight: 10,
+    marginBottom: 20
   },
   userStyle: {
     justifyContent: "flex-start",
     flexDirection: "row",
     borderColor: "#ddd",
-    position: "relative",
+    marginBottom: 10,
     padding: 10,
     borderRadius: 5,
     backgroundColor: '#1D65A6'
   },
   userAvatar: {
     width: 70,
-    height: 70
+    height: 70,
+    borderRadius: 10,
+  },
+  monsterAvatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+  },
+  monsterSelectedAvatar: {
+    width: Dimensions.get('window').height * 0.1,
+    height: Dimensions.get('window').height * 0.1,
+    borderRadius: 10,
   },
   userTextStyle: {
-    color: "#BCDAFB"
+    color: "#BCDAFB",
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 20
+  },
+  BoxButtonSelectMonster: {
+    elevation: 2,
+    marginTop: 10,
+    borderRadius: 7,
+    backgroundColor: '#192E5B',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   BoxButtonPlayGame: {
     elevation: 2,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 7,
     backgroundColor: '#192E5B',
-    height: 50,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },

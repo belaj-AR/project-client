@@ -65,6 +65,8 @@ class Lobby extends Component {
       buttonTextRegisterStyle,
       boxButtonJoinRoom,
       buttonTextJoinRoomStyle,
+      boxButtonFUllJoinRoom,
+      buttonTextFullJoinRoomStyle
     } = styles
 
     return (
@@ -92,6 +94,7 @@ class Lobby extends Component {
             <View style={contentProfile}>
               <FlatList
                 data={dataRoom}
+                showsVerticalScrollIndicator={false}
                 renderItem={({item}) => {
                     if (item.room.name !== 'InitAdmin') {
                       return (
@@ -122,7 +125,8 @@ class Lobby extends Component {
                               padding: 5,
                               alignSelf: 'flex-end',
                               alignItems: 'center',
-                              backgroundColor: item.room.status === 'Waiting' ? 'green' : 'red'
+                              fontWeight: '500',
+                              backgroundColor: item.room.status === 'Waiting' ? '#E5B633' : '#192E5B'
                             }}>
                               <Text style={{
                                 color: 'white',
@@ -134,11 +138,20 @@ class Lobby extends Component {
                             </View>
                           </View>                    
                         </View>
-                        <ButtonComp
-                          style={boxButtonJoinRoom}
-                          styleText={buttonTextJoinRoomStyle}
-                          fn={() => this.joinRoom(currentUser, item.room.id)}
-                          title="Join room"/>
+                        {
+                          item.room.players.p2 ?
+                            <ButtonComp
+                              style={boxButtonFUllJoinRoom}
+                              styleText={buttonTextJoinRoomStyle}
+                              fn={() => alert('this room is full')}
+                              title="Room full"/>
+                            :
+                            <ButtonComp
+                              style={boxButtonJoinRoom}
+                              styleText={buttonTextFullJoinRoomStyle}
+                              fn={() => this.joinRoom(currentUser, item.room.id)}
+                              title="Join room"/>
+                        }
                       </View>)
                     }   
                   }
@@ -232,14 +245,28 @@ const styles = {
   },
   buttonTextJoinRoomStyle: {
     fontSize: 12,
-    fontWeight: '400',
+    fontWeight: '500',
     color: '#BCDAFB'
+  },
+  buttonTextFullJoinRoomStyle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: 'white'
+  },
+  boxButtonFUllJoinRoom: {
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 7,
+    backgroundColor: '#192E5B',
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   boxButtonJoinRoom: {
     marginTop: 10,
     padding: 5,
     borderRadius: 7,
-    backgroundColor: '#1D65A6',
+    backgroundColor: '#E5B633',
     flex:1,
     alignItems: 'center',
     justifyContent: 'center',
