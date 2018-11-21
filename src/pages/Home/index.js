@@ -68,17 +68,13 @@ class HomePage extends Component {
           <View style={paddingInner}>
           </View>
           <View style={contentArea}>
-            <View style={headerProfile}>
-                <Text>
-                  Number
-                </Text>
-            </View>
+            
             <View style={contentProfile}>
               <View style={{
                 borderRadius: 10,
                 padding: 13,
                 alignSelf: 'stretch',
-                borderColor: 'red',
+                backgroundColor: '#fff',
                 flexDirection: 'row',
                 borderWidth: 0.2
               }}>
@@ -117,14 +113,51 @@ class HomePage extends Component {
                   </Text>
                 </View>
               </View>
-              <View style={{flex: .8, alignSelf: 'stretch'}}>
+              <View style={{flex: .7, alignSelf: 'stretch'}}>
                 <View style={{
                   flex: 1,
                   borderWidth: 0.2,
                   borderRadius: 10,
                   marginBottom: 20,
                   marginTop: 20,
+                  padding: 20,
                 }}>
+                  <Text
+                    style={{
+                      fontWeight: '500',
+                      fontSize: 17,
+                    }}
+                  >
+                    Total games played: 
+                    {
+                      currentUser &&
+                        this.props.currentUser.lose.length + this.props.currentUser.win.length
+                    }
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: '500',
+                      fontSize: 17,
+                    }}
+                  >
+                    Win: 
+                    {
+                      currentUser &&
+                        this.props.currentUser.win.length
+                    }
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: '500',
+                      fontSize: 17,
+                    }}
+                  >
+                    Lose: 
+                    {
+                      currentUser &&
+                        this.props.currentUser.lose.length
+                    }
+                  </Text>
                 </View>
               </View>
               <View style={{flex: .1}}>
@@ -134,7 +167,7 @@ class HomePage extends Component {
                   fn={() => {}}
                   title="History Battle"/>
               </View>
-              <View style={{flex: .1}}>
+              <View style={{flex: .1, marginTop: 15}}>
                 <ButtonComp
                   style={BoxButtonHistory}
                   styleText={buttonTextHistoryStyle}
@@ -168,7 +201,7 @@ const styles = {
     flex:0.03,
   },
   contentArea: {
-    flex: 1
+    flex: 1,
   },
   headerProfile: {
     flex: .08,
@@ -178,7 +211,7 @@ const styles = {
   contentProfile: {
     flex: .9,
     padding: 20,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 10,
     backgroundColor: '#fff',
     justifyContent: 'center',
@@ -192,6 +225,7 @@ const styles = {
     flexDirection: 'row'
   },
   BoxButtonHistory: {
+    marginTop: 15,
     borderRadius: 7,
     width: 200,
     backgroundColor: '#E5B633',
