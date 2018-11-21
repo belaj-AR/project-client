@@ -130,8 +130,8 @@ export default class ArenaGame extends Component {
     }
 
     let newPosition = [
-      this.getRandomNumberBetween(-7,7),
-      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-10,-4),
+      0,
       this.getRandomNumberBetween(-3,4)
     ];
 
@@ -180,8 +180,8 @@ export default class ArenaGame extends Component {
     }
 
     let newPosition = [
-      this.getRandomNumberBetween(-7,7),
-      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-10,-4),
+      0,
       this.getRandomNumberBetween(-3,4)
     ];
 
@@ -222,10 +222,10 @@ export default class ArenaGame extends Component {
   
         if (snapshot.val().status === "gameEnd" && String(snapshot.val().p1.monster.health) === "0"){
           this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player2Id, this.state.player1Id)
-          this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.setDataFromGame(this.state.player2Id)
         } else if (snapshot.val().status === "gameEnd" &&  String(snapshot.val().p2.monster.health) === "0") {
           this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player1Id, this.state.player2Id)
-          this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
+          this.props.arSceneNavigator.viroAppProps.propsFromGame.setDataFromGame(this.state.player1Id)
         }
 
         if(this.state.player1HP !== this.state.player1OldHp){
