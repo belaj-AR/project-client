@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView} from 'react-native'
+import {View, Text, Image} from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -16,14 +16,6 @@ import config from '../../../config'
 const { firebaseAuth, ngrokTunnel } = config
 
 class Register extends Component {
-
-  // componentDidMount = async () => {
-  //   let token = await AsyncStorage.getItem('token')
-
-  //   if (token) {
-  //     this.props.navigation.navigate('Home')
-  //   }
-  // }
 
   changeValue = (key, val) => {
     let dataUser = {
@@ -196,12 +188,22 @@ class Register extends Component {
             </View>
               <View style={boxContent}>
                 <View style={boxContentTitle}>
+                  <Image style={{
+                    width: 150,
+                    height: 100,
+                    marginTop: 20,
+                    marginBottom: 30,
+                  }} source={require('../../image/logoWhite.png')}/>
                   <Text
                     style={textContentPage}
                   >Register</Text>
                 </View>
 
-                <View>
+                <View
+                  style={{
+                    marginBottom:20,
+                  }}  
+                >
                   { 
                     dataInput.map((data,idx) => 
                       <Input key={idx} data={data}/>
@@ -214,6 +216,11 @@ class Register extends Component {
                   styleText={buttonTextRegisterStyle}
                   fn={() => this.createAccount()}
                   title="Submit"/>
+                <ButtonComp
+                  style={BoxButtonRegister}
+                  styleText={buttonTextRegisterStyle}
+                  fn={() => this.props.navigation.navigate('Login')}
+                  title="Login"/>
               </View>
             <View style={paddingOuterContent}>
             </View>
@@ -242,7 +249,7 @@ const styles = {
     elevation: 1,
     justifyContent: 'center',
     flexDirection: 'column',
-    backgroundColor: '#1D65A6',
+    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10
   },
@@ -257,11 +264,11 @@ const styles = {
   textContentPage: {
     fontSize: 40,
     fontWeight: '700',
-    color: '#BCDAFB'
+    color: '#192E5B'
   },
   BoxButtonRegister: {
     elevation: 2,
-    marginTop: 30,
+    marginTop: 10,
     borderRadius: 7,
     backgroundColor: '#192E5B',
     height: 40,

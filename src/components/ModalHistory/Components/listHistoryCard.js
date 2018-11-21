@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Modal, Text, ScrollView, Image, FlatList, View, AsyncStorage} from 'react-native'
+import React from 'react'
+import {Text, Image, View} from 'react-native'
 
 const style = {
   listBox: {

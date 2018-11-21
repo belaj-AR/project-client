@@ -317,6 +317,7 @@ class RoomGame extends Component {
 
 const styles = {
   containerStyle: {
+    marginTop:30,
     flex: 1,
     backgroundColor: '#72A2C0',
   },

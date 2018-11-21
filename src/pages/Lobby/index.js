@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, BackHandler, BackAndroid, Dimensions, FlatList} from 'react-native'
+import {View, Text, BackHandler, Dimensions, FlatList} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
@@ -185,6 +185,7 @@ class Lobby extends Component {
 
 const styles = {
   containerStyle: {
+    marginTop:30,
     flex: 1,
     backgroundColor: '#72A2C0',
     justifyContent: 'center',

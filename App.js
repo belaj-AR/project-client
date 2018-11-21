@@ -4,11 +4,14 @@ import store from './src/store'
 import {
   AsyncStorage,
   View,
+  Text,
+  Image,
   StyleSheet,
+  Animated,
+  Easing
 } from 'react-native';
 
-import { createNavigationContainer , createTabNavigator ,createStackNavigator, SwitchNavigator } from 'react-navigation';
-
+import { createNavigationContainer ,createStackNavigator, SwitchNavigator } from 'react-navigation';
 
 import Config from './config';
 
@@ -19,30 +22,7 @@ import CharOption from './src/pages/CharOptions'
 import Room from './src/pages/RoomGame'
 import Game from './src/pages/Game'
 import Home from './src/pages/Home'
-
-class AuthProcess extends Component {
-  constructor(props) {
-    super(props);
-    this._bootstrapAsync();
-  }
-
-  // Fetch the token from storage then navigate to our appropriate place
-  _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getItem('token');
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'App' : 'Login');
-  };
-
-  // Render any loading content that you like here
-  render() {
-    return (
-      <View>
-      </View>
-    );
-  }
-}
+import AuthProcess from './src/pages/authProcess'
 
 const AppStack = createStackNavigator({
   Home: Home,
@@ -51,12 +31,21 @@ const AppStack = createStackNavigator({
   Room: Room,
   Game: Game,
 }, {
-  initialRouteName: 'Home'
+  initialRouteName: 'Home',
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
 })
 
 const LoginStack = createStackNavigator({
   Login: Login,
   Register: Register
+}, {
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
 })
 
 const RouteAuth = createNavigationContainer(SwitchNavigator({
@@ -67,37 +56,6 @@ const RouteAuth = createNavigationContainer(SwitchNavigator({
   initialRouteName: 'AuthProcess'
 }))
 
-// const MyApp = createBottomTabNavigator ({
-//   "Login": {
-//     screen: Login
-//   },
-//   "Register": {
-//     screen: Register
-//   },
-//   "Lobby": {
-//     screen: Lobby
-//   },
-//   "Select Monster": {
-//     screen: CharOption
-//   },
-//   "Loading Before Game": {
-//     screen: LoadingPreGame
-//   },
-//   "Game": {
-//     screen: Game
-//   },
-//   "Home": {
-//     screen: Home
-//   }
-// },
-//  {
-//    initialRouteName: "Home"
-//  }
-// )
-
-/*
- TODO: Insert your API key below
- */
 var sharedProps = {
   apiKey: Config.API_KEY_VIRO,
 }
