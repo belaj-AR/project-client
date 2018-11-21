@@ -52,8 +52,7 @@ class RoomGame extends Component {
           if (!this.state.generateOnGameKey) {
             if ( dataRoomBattle.host === currentUser.email) {
               setKeyOnGamedata(roomId)
-              // removeM
-
+              
               this.setState({
                 generateOnGameKey: true,
               })

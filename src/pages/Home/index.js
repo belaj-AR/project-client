@@ -12,12 +12,18 @@ import getCurrentUser from '../../actions/getCurrentUser'
 
 import config from '../../../config'
 
+import HistoryModal from '../../components/ModalHistory'
+
 const { ngrokTunnel } = config
 
 class HomePage extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      showModalHistory: false
+    }
   }
 
 
@@ -40,6 +46,13 @@ class HomePage extends Component {
     await AsyncStorage.removeItem('token')
     this.props.setToken(null)
     this.props.navigation.navigate('Login')
+  }
+
+  changeModalStatus () {
+    
+    this.setState({
+      showModalHistory: !this.state.showModalHistory
+    })
   }
   
   render() {
@@ -164,7 +177,7 @@ class HomePage extends Component {
                 <ButtonComp
                   style={BoxButtonHistory}
                   styleText={buttonTextHistoryStyle}
-                  fn={() => {}}
+                  fn={() => this.changeModalStatus()}
                   title="History Battle"/>
               </View>
               <View style={{flex: .1, marginTop: 15}}>
@@ -182,6 +195,12 @@ class HomePage extends Component {
         </View>
         <View style={paddingOuter}>
       </View>
+      <HistoryModal
+        data={{
+          showModalHistory: this.state.showModalHistory,
+          closeModalFn: () => this.changeModalStatus()
+        }}
+      />
       </View>
     )
   }
