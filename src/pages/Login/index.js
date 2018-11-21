@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Text, Alert, ScrollView, AsyncStorage} from 'react-native'
+import {View, Text, Image, ScrollView, AsyncStorage} from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 
@@ -19,23 +19,7 @@ class Login extends Component {
 
   constructor(props) {
     super(props)
-
-    // this.state={
-    //   token: null
-    // }
   }
-
-  // componentDidMount = async () => {
-
-  //   let token = await AsyncStorage.getItem('token')
-
-  //   if (token) {
-  //     this.props.navigation.navigate('Home')
-  //     this.setState({
-  //       token: token
-  //     })
-  //   }
-  // }
 
   changeValue = (key, val) => {
     let dataUser = {
@@ -62,7 +46,6 @@ class Login extends Component {
         })
       })
       .then( async ({ data: { token } }) => {
-        // save token to asycnStorage
         await AsyncStorage.setItem('token', token)
         this.props.setToken(token)
         this.props.navigation.navigate('App')
@@ -137,6 +120,12 @@ class Login extends Component {
               <View
                 style={boxContentTitle}
               >
+                <Image style={{
+                  width: 150,
+                  height: 100,
+                  marginTop: 20,
+                  marginBottom: 30,
+                }} source={require('../../image/logoWhite.png')}/>
                 <Text
                   style={textContentPage}
                 >Login</Text>
@@ -161,11 +150,6 @@ class Login extends Component {
             </View>
           </View>
           <View style={paddingOuterContent}>
-            {/* <ScrollView>
-              <Text>
-                { this.state.token }
-              </Text>
-            </ScrollView> */}
           </View>
         </View>
         <View style={paddingOuter}>
@@ -192,14 +176,14 @@ const styles = {
   textContentPage: {
     fontSize: 40,
     fontWeight: '700',
-    color: '#BCDAFB'
+    color: '#192E5B'
   },
   boxContent: {
     flex:1,
     elevation: 1,
     justifyContent: 'center',
     flexDirection: 'column',
-    backgroundColor: '#1D65A6',
+    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10
   },

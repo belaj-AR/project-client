@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {View, Text} from 'react-native';
 
 import Config from '../../config';
-var BarrackScene = require('../../js/BarrackScene');
+
 
 var sharedProps = {
   apiKey: Config.API_KEY_VIRO,

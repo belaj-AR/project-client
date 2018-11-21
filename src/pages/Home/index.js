@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import axios from 'axios'
-import {View, Text, Alert, ScrollView, TouchableOpacity, AsyncStorage, Image} from 'react-native'
+import {View, Text, AsyncStorage, Image} from 'react-native'
 import { connect } from 'react-redux'
 
 import ActionArea from '../../components/ActionArea'
@@ -10,11 +10,7 @@ import logout from '../../actions/logout'
 import setToken from '../../actions/setToken'
 import getCurrentUser from '../../actions/getCurrentUser'
 
-import config from '../../../config'
-
 import HistoryModal from '../../components/ModalHistory'
-
-const { ngrokTunnel } = config
 
 class HomePage extends Component {
 
@@ -208,6 +204,7 @@ class HomePage extends Component {
 
 const styles = {
   containerStyle: {
+    marginTop:30,
     flex: 1,
     backgroundColor: '#72A2C0',
     justifyContent: 'center',

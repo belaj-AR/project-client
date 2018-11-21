@@ -12,13 +12,7 @@ class CharOptions extends Component {
     this.props.navigation.navigate('Loading Before Game', { hero })
   }
 
-  componentDidMount = () => {
-    // this.props.addItem()
-  }
-
   render() {
-
-    const { heroes } = this.props
 
     const { 
       containerStyle,
@@ -84,6 +78,7 @@ class CharOptions extends Component {
 
 const styles = {
   containerStyle: {
+    marginTop:30,
     flex: 1,
     backgroundColor: '#72A2C0',
     justifyContent: 'center',
