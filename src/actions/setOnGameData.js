@@ -72,7 +72,8 @@ export default function (dataPlayerOnline, roomKey, onGameKey) {
         lose : dataPlayer[1].lose,
         monster: dataPlayer[1].monster
       },
-      status: 'onGoing'    
+      status: 'onGoing'    ,
+      allPos: [0,0,-7]
     }, err => {
       if (!err) {
         firebaseDB.ref('/OnGame/onGameList/'+ onGameKey).on('value', function(snapshot) {

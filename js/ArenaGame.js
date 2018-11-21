@@ -37,23 +37,32 @@ export default class ArenaGame extends Component {
 
       playerReady: false,
       portalSound: false,
-      
+      allPositionDragon: [0,0,-7],
+
       player1Id: '',
       player1Name: '',
       player1HP: '',
-      player1Dmg: '100',
-      player1Position: [-4.3, 0, -5],
+      player1OldHp: '',
+      player1Dmg: '20',
+      player1Position: [-4.3, 0, 0],
       player1Status: false,
 
       player2Id: '',
       player2Name: '',
       player2HP: '',
-      player2Dmg: '100',
-      player2Position: [4.3, 0, -5],
+      player2OldHp: '',
+      player2Dmg: '20',
+      player2Position: [4.3, 0, 0],
       player2Status: false,
 
-      statusWinner: '',
+      // dummy data bellow
+      startAttack: false,
+      statusParticleOne: false,
+      statusParticleTwo: false,
+      statusParticleOneAttack: false,
+      statusParticleTwoAttack: false,
 
+      statusWinner: '',
       playerOne : {
         playerName: 'Harles',
         status: false,
@@ -89,21 +98,14 @@ export default class ArenaGame extends Component {
   }
 
   attackPlayerOne = () => {
-
-    let newPosition = [
-      this.getRandomNumberBetween(-7,7),
-      this.getRandomNumberBetween(-7,7),
-      this.getRandomNumberBetween(-3,4)
-    ];
-
+   
     let currentHP = Number(this.state.player1HP); 
     let damage = this.state.player2Dmg;
     if (currentHP - damage >= 0) {
       let newHP = String(currentHP - damage);
       if (newHP < 0) {
         firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p1/monster').update({
-            health: 0,
-            position: newPosition,
+          health: 0,
         })
 
         firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
@@ -113,7 +115,6 @@ export default class ArenaGame extends Component {
       } else {
         firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p1/monster').update({
           health: newHP,
-          position: newPosition
         })
 
       }
@@ -123,16 +124,28 @@ export default class ArenaGame extends Component {
       })
     }
 
-  }
-
-  attackPlayerTwo = () => {
-
-
     let newPosition = [
       this.getRandomNumberBetween(-7,7),
       this.getRandomNumberBetween(-7,7),
       this.getRandomNumberBetween(-3,4)
     ];
+
+    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
+      
+      if(String(snapshot.val().p1.monster.health) !== "0") {
+        firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+          allPos : newPosition
+        })
+      }
+      
+      this.setState({
+        player2OldHp: String(snapshot.val().p2.monster.health),
+      })
+    })    
+
+  }
+
+  attackPlayerTwo = () => {
 
     let currentHP = Number(this.state.player2HP); 
     let damage = this.state.player1Dmg;
@@ -141,8 +154,7 @@ export default class ArenaGame extends Component {
       if (newHP < 0) {
 
         firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p2/monster').update({
-          health: 0,
-          position: newPosition      
+          health: 0   
         })
 
         firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
@@ -152,8 +164,7 @@ export default class ArenaGame extends Component {
       } else {
       
         firebaseDB.ref(`/OnGame/onGameList/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).child('/p2/monster').update({
-            health: newHP,
-            position: newPosition
+            health: newHP
         })
        
       }
@@ -162,6 +173,26 @@ export default class ArenaGame extends Component {
         status: "gameEnd"
       })
     }
+
+    let newPosition = [
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-7,7),
+      this.getRandomNumberBetween(-3,4)
+    ];
+
+    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
+      
+      if(String(snapshot.val().p2.monster.health) !== "0") {
+        firebaseDB.ref(`/OnGame/onGameList/`).child(`/${this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId}`).update({
+          allPos : newPosition
+        })
+      }
+      
+      this.setState({
+        player1OldHp: String(snapshot.val().p1.monster.health),
+      })
+    })
+
   }
 
   actionAfterLoadPortal = () => {
@@ -170,38 +201,52 @@ export default class ArenaGame extends Component {
       this.setState({
         portalSound : false, 
         getStarted : false,
+        player1Status : true,
+        player2Status : true,
+        player1OldHp: String(snapshot.val().p1.monster.health),
+        player2OldHp: String(snapshot.val().p2.monster.health),
         player1Id: snapshot.val().p1.id,
         player2Id: snapshot.val().p2.id
       })
     })
   
-
     firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).on('value', (snapshot) => {
-      
-      // if (snapshot.val() !== null) {
+  
         if (snapshot.val().status === "gameEnd" && String(snapshot.val().p1.monster.health) === "0"){
           this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player2Id, this.state.player1Id)
           this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
-          // this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
         } else if (snapshot.val().status === "gameEnd" &&  String(snapshot.val().p2.monster.health) === "0") {
           this.props.arSceneNavigator.viroAppProps.propsFromGame.setTheWinner(this.state.player1Id, this.state.player2Id)
           this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
-          // this.props.arSceneNavigator.viroAppProps.propsFromGame.resetData()
+        }
+
+        if(this.state.player1HP !== this.state.player1OldHp){
+          this.setState({
+            statusParticleOne: true,
+            statusParticleOneAttack: false,
+            statusParticleTwo: false,
+            statusParticleTwoAttack: true,
+          })
+        } 
+        
+        if(this.state.player2HP !== this.state.player2OldHp){
+          this.setState({
+            statusParticleOne: false,
+            statusParticleOneAttack: true,
+            statusParticleTwo: true,
+            statusParticleTwoAttack: false,
+          })
         }
 
         this.setState({
           player1HP: String(snapshot.val().p1.monster.health),
           player2HP: String(snapshot.val().p2.monster.health),
+          allPositionDragon: snapshot.val().allPos
         });
-      // } else {
-      //   this.props.arSceneNavigator.viroAppProps.propsFromGame.fn()
-      // }
 
     });
  
   }
-
-
 
   render() {
 
@@ -240,260 +285,225 @@ export default class ArenaGame extends Component {
     );
   }
 
+  loadPortal = () => {
 
- loadPortal = () => {
-
-    return (
-        <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
-            <ViroPortal position={[0, 0, 0]} scale={[.5, .5, .5]}>
-              <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
-                resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
-                            require('./res/portal_res/portal_ship/portal_ship_normal.png'),
-                            require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
-                type="VRX"
-                onLoadEnd={ () => this.actionAfterLoadPortal()}/>
-            </ViroPortal>
-            <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
-               
-           { this.playerOne() }
-           { this.playerTwo() }
-
-        </ViroPortalScene>
+      return (
+          <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
+              <ViroPortal position={[0, 0, -.3]} scale={[.5, .5, .5]}>
+                <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
+                  resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
+                              require('./res/portal_res/portal_ship/portal_ship_normal.png'),
+                              require('./res/portal_res/portal_ship/portal_ship_specular.png')]}
+                  type="VRX"
+                  onLoadEnd={ () => this.actionAfterLoadPortal()}/>
+              </ViroPortal>
+              <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
+                
+            <ViroNode
+              position={this.state.allPositionDragon}
+            >
+              { this.playerOne() }
+              { this.playerTwo() }
+            </ViroNode>
         
-    )
- }
+          </ViroPortalScene>
+          
+      )
+  }
 
+  playerOne = () => {
 
- playerOne = () => {
+      return (
+        <ViroNode 
+          position={this.state.player1Position} 
+          scale={[0.8, 0.8, 0.8]}
+          animation={{name: "playerMove", run: true, loop: true}}
+        >
+          <Viro3DObject
+            source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+            resources={[require('./res/heroes/redDragon/color-map-dents.png'),
+                        require('./res/heroes/redDragon/color-map-eye.jpg'),
+                        require('./res/heroes/redDragon/color_map1.jpg'),
+                        require('./res/heroes/redDragon/normal-map-dents.png'),
+                        require('./res/heroes/redDragon/normal_map.png'),
+                        require('./res/heroes/redDragon/specmap.jpg'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
+                        require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
+            position={[0,2,0]}
+            rotation={[0, 90, 0]}
+            scale={[0.3, 0.3, 0.3]}
+            onClick={this.attackPlayerOne}
+            type="VRX"
+            />
 
+            <ViroNode
+              position={[.6, .4, 0]}
+            >
+              <ViroText 
+                text={this.state.player1Name} 
+                scale={[.5, .5, .5]} 
+                width={8} height={8}
+                style={styles.playerNameStyle} />
+
+              <ViroText 
+                text={this.state.player1HP} 
+                scale={[.5, .5, .5]}
+                position={[0, -.5, 0]} 
+                width={8} height={8}
+                style={styles.playerNameStyle} />
+
+            </ViroNode>
+  
+          { this.particleEmitterAttackOne() }
+          { this.particleOne() }
+         
+
+          {/* <ViroSpatialSound
+            rolloffModel="linear"
+            paused={false}
+            muted={false}
+            minDistance={3}
+            maxDistance={5}
+            position={[1, 0, -7]}
+            source={require('../js/res/sounds/arena/dragons/roar1.wav')}
+            loop={true}
+            volume={1.0}
+            onFinish={this.onFinishSpatial}
+            onError={this.onErrorSpatial}/> */}
+          
+        </ViroNode>    
+      )
+  }
+
+  playerTwo = () => {
+    
     return (
       <ViroNode 
-              position={this.state.player1Position} 
-              scale={[0.8, 0.8, 0.8]}
-              animation={{name: "playerMove", run: true, loop: true}}
-            >
-              <Viro3DObject
-                source={require('./res/heroes/redDragon/orange-dragon.vrx')}
-                resources={[require('./res/heroes/redDragon/color-map-dents.png'),
-                            require('./res/heroes/redDragon/color-map-eye.jpg'),
-                            require('./res/heroes/redDragon/color_map1.jpg'),
-                            require('./res/heroes/redDragon/normal-map-dents.png'),
-                            require('./res/heroes/redDragon/normal_map.png'),
-                            require('./res/heroes/redDragon/specmap.jpg'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                            require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-                position={[0,2,0]}
-                rotation={[0, 90, 0]}
-                scale={[0.3, 0.3, 0.3]}
-                onClick={this.attackPlayerOne}
-                type="VRX"
-                />
-
-                <ViroNode
-                  position={[.6, .4, 0]}
-                >
-                  <ViroText 
-                    text={this.state.player1Name} 
-                    scale={[.5, .5, .5]} 
-                    width={8} height={8}
-                    style={styles.playerNameStyle} />
-
-                  <ViroText 
-                    text={this.state.player1HP} 
-                    scale={[.5, .5, .5]}
-                    position={[0, -.5, 0]} 
-                    width={8} height={8}
-                    style={styles.playerNameStyle} />
-
-                </ViroNode>
-
-            <ViroParticleEmitter
-              position={[3, 2, 0]}
-              scale={[.4, .2, .2]}
-              duration={1100}
-              delay={1100}
-              visible={true}
-              run={true}
-              loop={true}
-              fixedToEmitter={true}
-
-              image={{
-                source:require("./res/particles/particle_fire_gray.png"),
-                height:1,
-                width:1,
-              }}
-
-              spawnBehavior={{
-                particleLifetime:[500,500],
-                emissionRatePerSecond:[200,200],
-                maxParticles:200,
-                spawnVolume:{
-                  shape:"box",
-                  params:[.7, .1, .1],
-                  spawnOnSurface:false
-                },
-              }}
-
-              particleAppearance={{
-                opacity:{
-                  initialRange:[0.0, 0.0],
-                  interpolation:[
-                    {endValue:0.4, interval:[0,200]},
-                    {endValue:0.0, interval:[900,1500]}
-                  ]
-                },
-              }}
-
-              particlePhysics={{
-                velocity:{initialRange:[[2,2,0], [2,-2,0]]},
-                acceleration:{initialRange:[[0,0,0], [0,0,0]]}
-              }}
+        position={this.state.player2Position} 
+        scale={[0.8, 0.8, 0.8]}
+        animation={{name: "playerMove", run: true, loop: true}}
+      >
+        <Viro3DObject
+          source={require('./res/heroes/redDragon/orange-dragon.vrx')}
+          resources={[require('./res/heroes/redDragon/color-map-dents.png'),
+                      require('./res/heroes/redDragon/color-map-eye.jpg'),
+                      require('./res/heroes/redDragon/color_map1.jpg'),
+                      require('./res/heroes/redDragon/normal-map-dents.png'),
+                      require('./res/heroes/redDragon/normal_map.png'),
+                      require('./res/heroes/redDragon/specmap.jpg'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
+                      require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
+          position={[0, 2, 0]}
+          rotation={[0, -90, 0]}
+          scale={[0.3, 0.3, 0.3]}
+          onClick={this.attackPlayerTwo}
+          onLoadEnd={this.onloadPlayerEnd}
+          type="VRX"
           />
 
+        <ViroNode
+          position={[-.6, -.4, 0]}
+        >
+          <ViroText
+            text={this.state.player2Name} 
+            scale={[.5, .5, .5]} 
+            width={8} height={8}
+            style={styles.playerNameStyle} />
 
+            <ViroText 
+            text={this.state.player2HP} 
+            scale={[.5, .5, .5]}
+            position={[0, -.5, 0]} 
+            width={8} height={8}
+            style={styles.playerNameStyle} />
+        </ViroNode>
+    
+        {this.particleEmitterAttackTwo()}
+        {this.partilceTwo()}
 
+      {/* <ViroSpatialSound
+        rolloffModel="linear"
+        paused={false}
+        muted={false}
+        minDistance={3}
+        maxDistance={5}
+        position={[1, 0, -7]}
+        source={require('../js/res/sounds/arena/dragons/roar1.wav')}
+        loop={true}
+        volume={1.0}
+        onFinish={this.onFinishSpatial}
+        onError={this.onErrorSpatial}/> */}
+      
+      </ViroNode>  
+    )          
 
+  }
 
+  particleOne = () => {
+    return (
+      <ViroNode 
+        position={[-.2, 3, 0]} 
+        scale={[1, 1, 1]} 
+        visible={this.state.player1Status}
+        >
 
+        <ViroParticleEmitter
+          duration={1200}
+          run={this.state.statusParticleOne}
+          fixedToEmitter={false}
 
+          image={{
+            source:require("./res/particles/particle_fire_green.png"),
+            height:10,
+            width:10,
+            bloomThreshold:0.0
+          }}
 
+          spawnBehavior={{
+            particleLifetime:[500,500],
+            emissionRatePerSecond:[30, 40],
+            maxParticles:800
+          }}
 
+          particleAppearance={{
+            opacity:{
+              initialRange:[0.2, 0.2],
+              factor:"time",
+              interpolation:[
+                {endValue:0.2, interval:[0,200]},
+                {endValue:0.0, interval:[200,500]},
+              ]
+            },
+            scale:{
+              initialRange:[[1,1,1], [1,1,1]],
+              factor:"time",
+              interpolation:[
+                {endValue:[0,0,0], interval:[150,500]},
+              ]
+            },
 
-              {/* <ViroSpatialSound
-                rolloffModel="linear"
-                paused={false}
-                muted={false}
-                minDistance={3}
-                maxDistance={5}
-                position={[1, 0, -7]}
-                source={require('../js/res/sounds/arena/dragons/roar1.wav')}
-                loop={true}
-                volume={1.0}
-                onFinish={this.onFinishSpatial}
-                onError={this.onErrorSpatial}/> */}
+          }}
 
-              <ViroNode 
-                position={[-.2, 3, 0]} 
-                scale={[1, 1, 1]} 
-                visible={this.state.player1Status}
-                >
-
-                <ViroParticleEmitter
-                  duration={1200}
-                  run={true}
-                  loop={true}
-                  fixedToEmitter={false}
-
-                  image={{
-                    source:require("./res/particles/particle_fire.png"),
-                    height:10,
-                    width:10,
-                    bloomThreshold:0.0
-                  }}
-
-                  spawnBehavior={{
-                    particleLifetime:[500,500],
-                    emissionRatePerSecond:[30, 40],
-                    maxParticles:800
-                  }}
-
-                  particleAppearance={{
-                    opacity:{
-                      initialRange:[0.2, 0.2],
-                      factor:"time",
-                      interpolation:[
-                        {endValue:0.2, interval:[0,200]},
-                        {endValue:0.0, interval:[200,500]},
-                      ]
-                    },
-                    scale:{
-                      initialRange:[[1,1,1], [1,1,1]],
-                      factor:"time",
-                      interpolation:[
-                        {endValue:[0,0,0], interval:[150,500]},
-                      ]
-                    },
-
-                  }}
-
-                  particlePhysics={{
-                    velocity:{initialRange:[[2,2,0], [2,-2,0]]},
-                    acceleration:{initialRange:[[0,0,0], [0,0,0]]}
-                  }}
-                />
-              </ViroNode>
-              
-            </ViroNode>    
-    )
- }
-
- playerTwo = () => {
-  
-  return (
-  <ViroNode 
-    position={this.state.player2Position} 
-    scale={[0.8, 0.8, 0.8]}
-    animation={{name: "playerMove", run: true, loop: true}}
-  >
-    <Viro3DObject
-      source={require('./res/heroes/redDragon/orange-dragon.vrx')}
-      resources={[require('./res/heroes/redDragon/color-map-dents.png'),
-                  require('./res/heroes/redDragon/color-map-eye.jpg'),
-                  require('./res/heroes/redDragon/color_map1.jpg'),
-                  require('./res/heroes/redDragon/normal-map-dents.png'),
-                  require('./res/heroes/redDragon/normal_map.png'),
-                  require('./res/heroes/redDragon/specmap.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-      position={[0, 2, 0]}
-      rotation={[0, -90, 0]}
-      scale={[0.3, 0.3, 0.3]}
-      onClick={this.attackPlayerTwo}
-      onLoadEnd={this.onloadPlayerEnd}
-      type="VRX"
-      />
-
-      <ViroNode
-        position={[-.6, -.4, 0]}
-      >
-        <ViroText 
-          text={this.state.player2Name} 
-          scale={[.5, .5, .5]} 
-          width={8} height={8}
-          style={styles.playerNameStyle} />
-
-           <ViroText 
-           text={this.state.player2HP} 
-           scale={[.5, .5, .5]}
-           position={[0, -.5, 0]} 
-           width={8} height={8}
-           style={styles.playerNameStyle} />
-
-
+          particlePhysics={{
+            velocity:{initialRange:[[2,2,0], [2,-2,0]]},
+            acceleration:{initialRange:[[0,0,0], [0,0,0]]}
+          }}
+        />
       </ViroNode>
+    )
+  }
 
-    {/* <ViroSpatialSound
-      rolloffModel="linear"
-      paused={false}
-      muted={false}
-      minDistance={3}
-      maxDistance={5}
-      position={[1, 0, -7]}
-      source={require('../js/res/sounds/arena/dragons/roar1.wav')}
-      loop={true}
-      volume={1.0}
-      onFinish={this.onFinishSpatial}
-      onError={this.onErrorSpatial}/> */}
-
-    <ViroNode 
+  partilceTwo = () => {
+    return (
+      <ViroNode 
       position={[-.2, 3, 0]} 
       scale={[1, 1, 1]} 
       visible={this.state.player2Status}
@@ -501,8 +511,7 @@ export default class ArenaGame extends Component {
 
       <ViroParticleEmitter
         duration={1200}
-        run={true}
-        loop={true}
+        run={this.state.statusParticleTwo}
         fixedToEmitter={false}
 
         image={{
@@ -543,12 +552,106 @@ export default class ArenaGame extends Component {
         }}
       />
     </ViroNode>
-    
-  </ViroNode>  
-  )          
+    )
+  }
 
- }
+  particleEmitterAttackOne = () => {
+    return (
+      <ViroNode 
+        position={[5.4, 2.55, 0]}
+      >
+      <ViroParticleEmitter
+          scale={[3, .7, .2]}
+          duration={1100}
+          delay={1100}
+          visible={true}
+          run={this.state.statusParticleOneAttack}
+          fixedToEmitter={true}
 
+          image={{
+            source:require("./res/particles/particle_fire.png"),
+            height:1,
+            width:1,
+          }}
+
+          spawnBehavior={{
+            particleLifetime:[500,500],
+            emissionRatePerSecond:[200,200],
+            maxParticles:200,
+            spawnVolume:{
+              shape:"box",
+              params:[.7, .1, .1],
+              spawnOnSurface:false
+            },
+          }}
+
+          particleAppearance={{
+            opacity:{
+              initialRange:[0.0, 0.0],
+              interpolation:[
+                {endValue:0.4, interval:[0,200]},
+                {endValue:0.0, interval:[900,1500]}
+              ]
+            },
+          }}
+
+          particlePhysics={{
+            velocity:{initialRange:[[2,2,0], [2,-2,0]]},
+            acceleration:{initialRange:[[0,0,0], [0,0,0]]}
+          }}
+        />
+      </ViroNode>
+    )
+  }
+
+  particleEmitterAttackTwo = () => {
+    return (
+      <ViroNode 
+        position={[-5.4, 2.55, 0]}
+      >
+      <ViroParticleEmitter
+        scale={[3, .7, .2]}
+        duration={1100}
+        delay={1100}
+        visible={true}
+        run={this.state.statusParticleTwoAttack}
+        fixedToEmitter={true}
+
+        image={{
+          source:require("./res/particles/particle_fire_green.png"),
+          height:1,
+          width:1,
+        }}
+
+        spawnBehavior={{
+          particleLifetime:[500,500],
+          emissionRatePerSecond:[200,200],
+          maxParticles:200,
+          spawnVolume:{
+            shape:"box",
+            params:[.7, .1, .1],
+            spawnOnSurface:false
+          },
+        }}
+
+        particleAppearance={{
+          opacity:{
+            initialRange:[0.0, 0.0],
+            interpolation:[
+              {endValue:0.4, interval:[0,200]},
+              {endValue:0.0, interval:[900,1500]}
+            ]
+          },
+        }}
+
+        particlePhysics={{
+          velocity:{initialRange:[[-2,2,0], [-2,-2,0]]},
+          acceleration:{initialRange:[[0,0,0], [0,0,0]]}
+        }}
+      /> 
+      </ViroNode>
+    )
+  }
 
 }
 
@@ -579,91 +682,3 @@ ViroAnimations.registerAnimations({
 });
 
 module.exports = ArenaGame;
-
-
-// particle on hero
-{/* <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
-  <ViroSpatialSound
-      rolloffModel="linear"
-      paused={false}
-      muted={false}
-      minDistance={15}
-      maxDistance={5}
-      source={require('../js/res/sounds/arena/dragons/roar1.wav')}
-      loop={true}
-      volume={1}
-      onFinish={this.onFinishSpatial}
-      onError={this.onErrorSpatial}/>
-</ViroNode> 
-
-<ViroNode 
-  position={[.2, 3, 0]} 
-  scale={[1, 1, 1]} 
-  visible={this.state.playerOne.status}
-  onLoadEnd={this.getWinner}  
->
-  <ViroParticleEmitter
-    duration={1200}
-    run={true}
-    loop={true}
-    fixedToEmitter={false}
-
-    image={{
-      source:require("./res/particles/particle_fire.png"),
-      height:10,
-      width:10,
-      bloomThreshold:0.0
-    }}
-
-    spawnBehavior={{
-      particleLifetime:[500,500],
-      emissionRatePerSecond:[30, 40],
-      maxParticles:800
-    }}
-
-    particleAppearance={{
-      opacity:{
-        initialRange:[0.2, 0.2],
-        factor:"time",
-        interpolation:[
-          {endValue:0.2, interval:[0,200]},
-          {endValue:0.0, interval:[200,500]},
-        ]
-      },
-      scale:{
-        initialRange:[[1,1,1], [1,1,1]],
-        factor:"time",
-        interpolation:[
-          {endValue:[0,0,0], interval:[150,500]},
-        ]
-      },
-
-    }}
-
-    particlePhysics={{
-      velocity:{initialRange:[[2,2,0], [2,-2,0]]},
-      acceleration:{initialRange:[[0,0,0], [0,0,0]]}
-    }}
-  />
-</ViroNode> */}
-
-
-
-// sound for portal
-// {
-//   this.state.portalSound && 
-//   ( 
-//     <ViroNode position={[0, 0, 0]} scale={[0, 0, 0]}>
-//       <ViroSpatialSound
-//           rolloffModel="linear"
-//           paused={this.state.portalSound}
-//           muted={false}
-//           minDistance={10}
-//           maxDistance={5}
-//           source={require('../js/res/sounds/portal/air_portal.wav')}
-//           loop={true}
-//           volume={1}
-//           />
-//     </ViroNode>
-//   )
-// }

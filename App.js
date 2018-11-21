@@ -17,7 +17,6 @@ import Register from './src/pages/Register'
 import Lobby from './src/pages/Lobby'
 import CharOption from './src/pages/CharOptions'
 import Room from './src/pages/RoomGame'
-// import Barrack from './src/pages/Barrack';
 import Game from './src/pages/Game'
 import Home from './src/pages/Home'
 
