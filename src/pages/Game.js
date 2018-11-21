@@ -6,6 +6,7 @@ import   config from '../../config'
 const { ngrokTunnel, firebaseDB } = config
 
 import resetGame from '../actions/resetGame'
+import setDataFromGame from '../actions/setDataFromGame'
 import getCurrentUser from '../actions/getCurrentUser'
 var ArenaGame = require('../../js/ArenaGame');
 
@@ -23,16 +24,6 @@ class Game extends Component {
     }
 
   }
-
-  // attack = (gameId, playersTargetNumber, dmg, remainingHealth) => {
-  //   let newHealth = remainingHealth - dmg
-  
-  //   if (newHealth < 0) {
-  //     newHealth = 0
-  //   }
-
-  //   firebaseDB.ref(`/OnGame/onGameList/` + gameId + '/' + playersTargetNumber + '/monster/health').set(newHealth)
-  // }
 
   setTheWinner = async (playerWinner, playerLoser) => {
     let token = await AsyncStorage.getItem('token')
@@ -54,9 +45,15 @@ class Game extends Component {
     .catch((err) => {});
   }
 
-  resetData = () => {
-    this.props.resetGame(this.props.players.roomId , this.props.players.gameId)
+  setDataFromGame = (playerWinner) => {
+    // this.props.resetGame(this.props.players.roomId , this.props.players.gameId)
+    this.props.setDataFromGame(playerWinner, this.props.players.gameId, this.props.players.roomId)
+    this.props.navigation.navigate("Home")
   }
+
+  // fnDataToHome = (playerWinner, gameId, roomdId) => {
+    // this.props.navigation.navigate("Home", {winner : playerWinner, gameId : gameId, roomId : roomdId})
+  // }
 
   render(){
     return (
@@ -64,9 +61,8 @@ class Game extends Component {
         initialScene={{scene: ArenaGame}} 
         viroAppProps={{ propsFromGame: {
                           players: this.props.players,
-                          fn: () => this.props.navigation.navigate("Home"),
                           setTheWinner: (playerWinner, playerLoser) => this.setTheWinner(playerWinner, playerLoser),
-                          resetData: () => this.resetData()
+                          setDataFromGame: (playerWinner) => this.setDataFromGame(playerWinner)
                       }}}/> 
     );
   }
@@ -80,11 +76,10 @@ const setStateToProps = (state) => {
 
 const setDispatchToProps = (dispatch) => {
   return ({
-    resetGame: (currentRoomId, onGameKey) => dispatch(resetGame(currentRoomId, onGameKey)),
-    getCurrentUser: (token) => dispatch(getCurrentUser(token))
+    // resetGame: (currentRoomId, onGameKey) => dispatch(resetGame(currentRoomId, onGameKey)),
+    getCurrentUser: (token) => dispatch(getCurrentUser(token)),
+    setDataFromGame: (playerWinner, gameId, roomId) => dispatch(setDataFromGame(playerWinner, gameId, roomId))
   })
 }
 
 export default connect(setStateToProps, setDispatchToProps)(Game)
-
-// fn: () => this.props.navigation.navigate("Home"),

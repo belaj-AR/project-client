@@ -260,7 +260,8 @@ const styles = {
 const setStateToProps = (state) => {
   return ({
     token: state.token.token,
-    currentUser: state.currentUser.currentUser
+    currentUser: state.currentUser.currentUser,
+    dataFromGame: state.dataFromGame
   })
 }
 
