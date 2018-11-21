@@ -13,6 +13,7 @@ import dataRoom from '../reducers/dataRoom'
 import dataRoomBattle from '../reducers/dataRoomBattle'
 import onGameData from '../reducers/onGamedata'
 import monsterList from '../reducers/monsterList'
+import matches from '../reducers/matches'
 
 const reducers = combineReducers({
   FormInput, 
@@ -27,7 +28,8 @@ const reducers = combineReducers({
   dataRoom,
   dataRoomBattle,
   onGameData,
-  monsterList
+  monsterList,
+  matches
 })
 
 const store = createStore(

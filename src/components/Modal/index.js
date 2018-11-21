@@ -64,15 +64,7 @@ class ModalComp extends Component {
     currentUser,
     data: { 
       modalVisible, 
-      msgTitle, 
-      msgSuccess, 
-      msgFailed,  
-      actionModalStatus,
-      changeModalVisible,
-      fn: {
-        fnSuccess,
-        fnFailed
-      }
+      changeModalVisible
     }} = this.props
 
 
