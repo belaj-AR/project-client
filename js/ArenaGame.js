@@ -28,12 +28,14 @@ export default class ArenaGame extends Component {
     super(props);
 
     this.state = {
-      welcomeText: "touch the magical shield below",
-      message : "PREPARING ARENA",
+      welcomeText: "",
+      statusShield: true,
 
+      statusPortal: true,
       getStarted: true,
 
-      summonDragons: true,
+      statusSummonDragons: true,
+      summoningDragonText : "SUMMONING DRAGON",
 
       playerReady: false,
       portalSound: false,
@@ -43,7 +45,7 @@ export default class ArenaGame extends Component {
       player1Name: '',
       player1HP: '',
       player1OldHp: '',
-      player1Dmg: '20',
+      player1Dmg: '',
       player1Position: [-4.3, 0, 0],
       player1Status: false,
 
@@ -51,11 +53,12 @@ export default class ArenaGame extends Component {
       player2Name: '',
       player2HP: '',
       player2OldHp: '',
-      player2Dmg: '20',
+      player2Dmg: '',
       player2Position: [4.3, 0, 0],
       player2Status: false,
 
       // dummy data bellow
+      statusPlayerReady: false,
       startAttack: false,
       statusParticleOne: false,
       statusParticleTwo: false,
@@ -87,6 +90,8 @@ export default class ArenaGame extends Component {
 
   onloadPlayerEnd = () => {
     this.setState({
+      statusPlayerReady: true,
+      statusSummonDragons: false,
       player1Name: this.props.arSceneNavigator.viroAppProps.propsFromGame.players.p1.fname,
       player2Name: this.props.arSceneNavigator.viroAppProps.propsFromGame.players.p2.fname
     })
@@ -201,8 +206,11 @@ export default class ArenaGame extends Component {
       this.setState({
         portalSound : false, 
         getStarted : false,
+        statusPortal: false,
         player1Status : true,
         player2Status : true,
+        player1Dmg: snapshot.val().p1.monster.dmg,
+        player2Dmg: snapshot.val().p2.monster.dmg,
         player1OldHp: String(snapshot.val().p1.monster.health),
         player2OldHp: String(snapshot.val().p2.monster.health),
         player1Id: snapshot.val().p1.id,
@@ -248,6 +256,19 @@ export default class ArenaGame extends Component {
  
   }
 
+  //helpfunction
+  shieldOnloadStart = () => {
+    this.setState({
+      welcomeText :"PLEASE WAIT"
+    })
+  }
+
+  shieldOnloadEnd = () => {
+    this.setState({
+      welcomeText : "TOUCH THE MAGICIAL SHIELD BELOW"
+    })
+  }
+
   render() {
 
     return (
@@ -257,27 +278,32 @@ export default class ArenaGame extends Component {
       
           <ViroNode 
             position={[0, 0, -.4]}
-            visible={this.state.getStarted}
+            visible={this.state.statusPortal}
           >
             <ViroText 
               text={this.state.welcomeText}
-              position={[0,.09,0]}
+              textLineBreakMode="wordwrap"
+              position={[0,.15,0]}
               scale={[.1, .1, .1]} 
-              width={2} height={2}
+              width={3} 
+              height={2}
               style={styles.getStartedTextStyle} />
             
             <ViroAmbientLight color="#ffffff" intensity={200}/>
 
             <Viro3DObject
+              visible={this.state.statusShield}
               source={require('./res/start_game/Wonder_Woman_V_Shield.obj')}
               resources={[require('./res/start_game/Wonder_Woman_V_Shield.mtl')]}
               scale={[.2, .2, .2]}
-              onClick={() => this.setState({playerReady: true, portalSound: true, welcomeText: 'OPENING THE PORTAL'})}
+              onLoadStart={this.shieldOnloadStart}
+              onLoadEnd={this.shieldOnloadEnd}
+              onClick={() => this.setState({playerReady: true, portalSound: true, statusShield: false, welcomeText: 'OPENING THE PORTAL'})}
               type="OBJ" />
           </ViroNode>
 
-
           <ViroAmbientLight color="#ffffff" intensity={200}/>
+          
           
           {this.state.playerReady && this.loadPortal()}
   
@@ -289,6 +315,8 @@ export default class ArenaGame extends Component {
 
       return (
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
+
+
               <ViroPortal position={[0, 0, -.3]} scale={[.5, .5, .5]}>
                 <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                   resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
@@ -298,7 +326,17 @@ export default class ArenaGame extends Component {
                   onLoadEnd={ () => this.actionAfterLoadPortal()}/>
               </ViroPortal>
               <Viro360Image source={require("./res/portal_res/arena_360.jpg")} />
-                
+
+            <ViroText 
+              text={this.state.summoningDragonText}
+              visible={this.state.statusSummonDragons}
+              textLineBreakMode="wordwrap"
+              position={[0,.15,-5]}
+              scale={[.1, .1, .1]} 
+              width={3} 
+              height={2}
+              style={styles.getStartedTextStyle} />
+              
             <ViroNode
               position={this.state.allPositionDragon}
             >
@@ -337,6 +375,7 @@ export default class ArenaGame extends Component {
             rotation={[0, 90, 0]}
             scale={[0.3, 0.3, 0.3]}
             onClick={this.attackPlayerOne}
+            onLoadEnd={this.onloadPlayerEnd}
             type="VRX"
             />
 
@@ -345,12 +384,14 @@ export default class ArenaGame extends Component {
             >
               <ViroText 
                 text={this.state.player1Name} 
+                visible={this.state.statusPlayerReady}
                 scale={[.5, .5, .5]} 
                 width={8} height={8}
                 style={styles.playerNameStyle} />
 
               <ViroText 
                 text={this.state.player1HP} 
+                visible={this.state.statusPlayerReady}
                 scale={[.5, .5, .5]}
                 position={[0, -.5, 0]} 
                 width={8} height={8}
@@ -414,12 +455,14 @@ export default class ArenaGame extends Component {
         >
           <ViroText
             text={this.state.player2Name} 
+            visible={this.state.statusPlayerReady}
             scale={[.5, .5, .5]} 
             width={8} height={8}
             style={styles.playerNameStyle} />
 
             <ViroText 
             text={this.state.player2HP} 
+            visible={this.state.statusPlayerReady}
             scale={[.5, .5, .5]}
             position={[0, -.5, 0]} 
             width={8} height={8}
@@ -658,8 +701,9 @@ export default class ArenaGame extends Component {
 var styles = StyleSheet.create({
   getStartedTextStyle: {
     fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#ffffff',
+    fontSize: 40,
+    color: '#000',
+    fontWeight: '500',
     textAlignVertical: 'center',
     textAlign: 'center',
   },

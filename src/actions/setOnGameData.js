@@ -46,8 +46,8 @@ export default function (dataPlayerOnline, roomKey, onGameKey) {
       }
     }
 
-    dataPlayer[0].monster.health = 500
-    dataPlayer[1].monster.health = 500
+    dataPlayer[0].monster.health = 750
+    dataPlayer[1].monster.health = 750
     dataPlayer[0].monster.pos = [0,0,0]
     dataPlayer[1].monster.pos = [0,0,0]
 
