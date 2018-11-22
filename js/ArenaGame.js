@@ -28,6 +28,9 @@ export default class ArenaGame extends Component {
     super(props);
 
     this.state = {
+      playerOneTexture: require('./res/particles/particle_fire_blue.png'),
+      playerTwoTexture: require('./res/particles/particle_fire_green.png'),
+      thisGreen: '',
       welcomeText: "",
       statusShield: true,
 
@@ -66,23 +69,20 @@ export default class ArenaGame extends Component {
       statusParticleTwoAttack: false,
 
       statusWinner: '',
-      playerOne : {
-        playerName: 'Harles',
-        status: false,
-        model3d:  require('./res/heroes/redDragon/orange-dragon.vrx'),
-        textures:[require('./res/heroes/redDragon/color-map-dents.png'),
-                  require('./res/heroes/redDragon/color-map-eye.jpg'),
-                  require('./res/heroes/redDragon/color_map1.jpg'),
-                  require('./res/heroes/redDragon/normal-map-dents.png'),
-                  require('./res/heroes/redDragon/normal_map.png'),
-                  require('./res/heroes/redDragon/specmap.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                  require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]
-      }
+      playerOneObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
+      playerOneObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
+                                require('./res/heroes/redsDragon/color-map-eye.jpg'),
+                                require('./res/heroes/redsDragon/color_map1_red.jpg'),
+                                require('./res/heroes/redsDragon/normal-map-dents.png'),
+                                require('./res/heroes/redsDragon/normal_map.png'),
+                                require('./res/heroes/redsDragon/specmap.jpg')],
+      playerTwoObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
+      playerTwoObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
+                                require('./res/heroes/redsDragon/color-map-eye.jpg'),
+                                require('./res/heroes/redsDragon/color_map1_red.jpg'),
+                                require('./res/heroes/redsDragon/normal-map-dents.png'),
+                                require('./res/heroes/redsDragon/normal_map.png'),
+                                require('./res/heroes/redsDragon/specmap.jpg')],
       
     };
 
@@ -130,9 +130,9 @@ export default class ArenaGame extends Component {
     }
 
     let newPosition = [
-      this.getRandomNumberBetween(-10,-4),
+      this.getRandomNumberBetween(-4,-10),
       0,
-      this.getRandomNumberBetween(-3,4)
+      this.getRandomNumberBetween(-4,4)
     ];
 
     firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
@@ -180,9 +180,9 @@ export default class ArenaGame extends Component {
     }
 
     let newPosition = [
-      this.getRandomNumberBetween(-10,-4),
+      this.getRandomNumberBetween(-4,-10),
       0,
-      this.getRandomNumberBetween(-3,4)
+      this.getRandomNumberBetween(-4,4)
     ];
 
     firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
@@ -202,7 +202,7 @@ export default class ArenaGame extends Component {
 
   actionAfterLoadPortal = () => {
    
-    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {
+    firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).once('value', (snapshot) => {  
       this.setState({
         portalSound : false, 
         getStarted : false,
@@ -216,6 +216,80 @@ export default class ArenaGame extends Component {
         player1Id: snapshot.val().p1.id,
         player2Id: snapshot.val().p2.id
       })
+
+      if(snapshot.val().p1.monster.source === "particle_fire_red.png"){
+        this.setState({
+          playerOneTexture: require('./res/particles/particle_fire_red.png'),
+          playerOneObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
+          playerOneObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
+                                require('./res/heroes/redsDragon/color-map-eye.jpg'),
+                                require('./res/heroes/redsDragon/color_map1_red.jpg'),
+                                require('./res/heroes/redsDragon/normal-map-dents.png'),
+                                require('./res/heroes/redsDragon/normal_map.png'),
+                                require('./res/heroes/redsDragon/specmap.jpg')],
+        })
+      } 
+      
+      if (snapshot.val().p1.monster.source === "particle_fire_blue.png") {
+        this.setState({
+          playerOneTexture: require('./res/particles/particle_fire_blue.png'),
+          playerOneObject : require('./res/heroes/blueDragon/blue-dragon.vrx'),
+          playerOneObjectTexture : [require('./res/heroes/blueDragon/color-map-dents.png'),
+                                require('./res/heroes/blueDragon/color-map-eye.jpg'),
+                                require('./res/heroes/blueDragon/color_map1_blue.jpg'),
+                                require('./res/heroes/blueDragon/normal-map-dents.png'),
+                                require('./res/heroes/blueDragon/normal_map.png'),
+                                require('./res/heroes/blueDragon/specmap.jpg')],
+        })
+      } 
+      if (snapshot.val().p1.monster.source === "particle_fire_green.png") { 
+        this.setState({
+          playerOneTexture: require('./res/particles/particle_fire_green.png'),
+          playerOneObject : require('./res/heroes/greenDragon/green-dragon.vrx'),
+          playerOneObjectTexture : [require('./res/heroes/greenDragon/color-map-dents.png'),
+                                require('./res/heroes/greenDragon/color-map-eye.jpg'),
+                                require('./res/heroes/greenDragon/color_map1_green.jpg'),
+                                require('./res/heroes/greenDragon/normal-map-dents.png'),
+                                require('./res/heroes/greenDragon/normal_map.png'),
+                                require('./res/heroes/greenDragon/specmap.jpg')],
+        })
+      }
+      if(snapshot.val().p2.monster.source === "particle_fire_red.png"){
+        this.setState({
+          playerTwoTexture: require('./res/particles/particle_fire_red.png'),
+          playerTwoObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
+          playerTwoObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
+                                require('./res/heroes/redsDragon/color-map-eye.jpg'),
+                                require('./res/heroes/redsDragon/color_map1_red.jpg'),
+                                require('./res/heroes/redsDragon/normal-map-dents.png'),
+                                require('./res/heroes/redsDragon/normal_map.png'),
+                                require('./res/heroes/redsDragon/specmap.jpg')],
+        })
+      } 
+      if (snapshot.val().p2.monster.source === "particle_fire_blue.png") {
+        this.setState({
+          playerTwoTexture: require('./res/particles/particle_fire_blue.png'),
+          playerTwoObject : require('./res/heroes/blueDragon/blue-dragon.vrx'),
+          playerTwoObjectTexture : [require('./res/heroes/blueDragon/color-map-dents.png'),
+                                require('./res/heroes/blueDragon/color-map-eye.jpg'),
+                                require('./res/heroes/blueDragon/color_map1_blue.jpg'),
+                                require('./res/heroes/blueDragon/normal-map-dents.png'),
+                                require('./res/heroes/blueDragon/normal_map.png'),
+                                require('./res/heroes/blueDragon/specmap.jpg')],
+        })
+      } 
+      if (snapshot.val().p2.monster.source === "particle_fire_green.png") { 
+        this.setState({
+          playerTwoTexture: require('./res/particles/particle_fire_green.png'),
+          playerTwoObject : require('./res/heroes/greenDragon/green-dragon.vrx'),
+          playerTwoObjectTexture : [require('./res/heroes/greenDragon/color-map-dents.png'),
+                                require('./res/heroes/greenDragon/color-map-eye.jpg'),
+                                require('./res/heroes/greenDragon/color_map1_green.jpg'),
+                                require('./res/heroes/greenDragon/normal-map-dents.png'),
+                                require('./res/heroes/greenDragon/normal_map.png'),
+                                require('./res/heroes/greenDragon/specmap.jpg')],
+        })
+      }
     })
   
     firebaseDB.ref('/OnGame/onGameList/'+ this.props.arSceneNavigator.viroAppProps.propsFromGame.players.gameId).on('value', (snapshot) => {
@@ -256,7 +330,6 @@ export default class ArenaGame extends Component {
  
   }
 
-  //helpfunction
   shieldOnloadStart = () => {
     this.setState({
       welcomeText :"PLEASE WAIT"
@@ -317,7 +390,7 @@ export default class ArenaGame extends Component {
           <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
 
 
-              <ViroPortal position={[0, 0, -.3]} scale={[.5, .5, .5]}>
+              <ViroPortal position={[0, 0, -.35]} scale={[.2, .2, .2]}>
                 <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                   resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                               require('./res/portal_res/portal_ship/portal_ship_normal.png'),
@@ -358,20 +431,9 @@ export default class ArenaGame extends Component {
           animation={{name: "playerMove", run: true, loop: true}}
         >
           <Viro3DObject
-            source={require('./res/heroes/redDragon/orange-dragon.vrx')}
-            resources={[require('./res/heroes/redDragon/color-map-dents.png'),
-                        require('./res/heroes/redDragon/color-map-eye.jpg'),
-                        require('./res/heroes/redDragon/color_map1.jpg'),
-                        require('./res/heroes/redDragon/normal-map-dents.png'),
-                        require('./res/heroes/redDragon/normal_map.png'),
-                        require('./res/heroes/redDragon/specmap.jpg'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                        require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-            position={[0,2,0]}
+            source={this.state.playerOneObject}
+            resources={this.state.playerOneObjectTexture}
+            position={[0, -1, 0]}
             rotation={[0, 90, 0]}
             scale={[0.3, 0.3, 0.3]}
             onClick={this.attackPlayerOne}
@@ -429,20 +491,9 @@ export default class ArenaGame extends Component {
         animation={{name: "playerMove", run: true, loop: true}}
       >
         <Viro3DObject
-          source={require('./res/heroes/redDragon/orange-dragon.vrx')}
-          resources={[require('./res/heroes/redDragon/color-map-dents.png'),
-                      require('./res/heroes/redDragon/color-map-eye.jpg'),
-                      require('./res/heroes/redDragon/color_map1.jpg'),
-                      require('./res/heroes/redDragon/normal-map-dents.png'),
-                      require('./res/heroes/redDragon/normal_map.png'),
-                      require('./res/heroes/redDragon/specmap.jpg'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/color-map-dents.png'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/color-map-eye.jpg'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/color_map1.jpg'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/normal-map-dents.png'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/normal_map.png'),
-                      require('./res/heroes/redDragon/orange-dragon.fbm/specmap.jpg')]}
-          position={[0, 2, 0]}
+          source={this.state.playerTwoObject}
+          resources={this.state.playerTwoObjectTexture}
+          position={[0, -1, 0]}
           rotation={[0, -90, 0]}
           scale={[0.3, 0.3, 0.3]}
           onClick={this.attackPlayerTwo}
@@ -504,7 +555,7 @@ export default class ArenaGame extends Component {
           fixedToEmitter={false}
 
           image={{
-            source:require("./res/particles/particle_fire_green.png"),
+            source:this.state.playerOneTexture,
             height:10,
             width:10,
             bloomThreshold:0.0
@@ -558,7 +609,7 @@ export default class ArenaGame extends Component {
         fixedToEmitter={false}
 
         image={{
-          source:require("./res/particles/particle_fire.png"),
+          source: this.state.playerTwoTexture,
           height:10,
           width:10,
           bloomThreshold:0.0
@@ -612,7 +663,7 @@ export default class ArenaGame extends Component {
           fixedToEmitter={true}
 
           image={{
-            source:require("./res/particles/particle_fire.png"),
+            source:this.state.playerTwoTexture,
             height:1,
             width:1,
           }}
@@ -661,7 +712,7 @@ export default class ArenaGame extends Component {
         fixedToEmitter={true}
 
         image={{
-          source:require("./res/particles/particle_fire_green.png"),
+          source:this.state.playerOneTexture,
           height:1,
           width:1,
         }}
