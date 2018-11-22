@@ -219,7 +219,7 @@ export default class ArenaGame extends Component {
 
       if(snapshot.val().p1.monster.source === "particle_fire_red.png"){
         this.setState({
-          playerOneTexture: require('./res/particles/particle_fire_red.png'),
+          playerTwoTexture: require('./res/particles/particle_fire_red.png'),
           playerOneObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
           playerOneObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
                                 require('./res/heroes/redsDragon/color-map-eye.jpg'),
@@ -228,11 +228,10 @@ export default class ArenaGame extends Component {
                                 require('./res/heroes/redsDragon/normal_map.png'),
                                 require('./res/heroes/redsDragon/specmap.jpg')],
         })
-      } 
-      
+      }     
       if (snapshot.val().p1.monster.source === "particle_fire_blue.png") {
         this.setState({
-          playerOneTexture: require('./res/particles/particle_fire_blue.png'),
+          playerTwoTexture: require('./res/particles/particle_fire_blue.png'),
           playerOneObject : require('./res/heroes/blueDragon/blue-dragon.vrx'),
           playerOneObjectTexture : [require('./res/heroes/blueDragon/color-map-dents.png'),
                                 require('./res/heroes/blueDragon/color-map-eye.jpg'),
@@ -244,7 +243,7 @@ export default class ArenaGame extends Component {
       } 
       if (snapshot.val().p1.monster.source === "particle_fire_green.png") { 
         this.setState({
-          playerOneTexture: require('./res/particles/particle_fire_green.png'),
+          playerTwoTexture: require('./res/particles/particle_fire_green.png'),
           playerOneObject : require('./res/heroes/greenDragon/green-dragon.vrx'),
           playerOneObjectTexture : [require('./res/heroes/greenDragon/color-map-dents.png'),
                                 require('./res/heroes/greenDragon/color-map-eye.jpg'),
@@ -256,7 +255,7 @@ export default class ArenaGame extends Component {
       }
       if(snapshot.val().p2.monster.source === "particle_fire_red.png"){
         this.setState({
-          playerTwoTexture: require('./res/particles/particle_fire_red.png'),
+          playerOneTexture: require('./res/particles/particle_fire_red.png'),
           playerTwoObject : require('./res/heroes/redsDragon/red-dragon.vrx'),
           playerTwoObjectTexture : [require('./res/heroes/redsDragon/color-map-dents.png'),
                                 require('./res/heroes/redsDragon/color-map-eye.jpg'),
@@ -268,7 +267,7 @@ export default class ArenaGame extends Component {
       } 
       if (snapshot.val().p2.monster.source === "particle_fire_blue.png") {
         this.setState({
-          playerTwoTexture: require('./res/particles/particle_fire_blue.png'),
+          playerOneTexture: require('./res/particles/particle_fire_blue.png'),
           playerTwoObject : require('./res/heroes/blueDragon/blue-dragon.vrx'),
           playerTwoObjectTexture : [require('./res/heroes/blueDragon/color-map-dents.png'),
                                 require('./res/heroes/blueDragon/color-map-eye.jpg'),
@@ -280,7 +279,7 @@ export default class ArenaGame extends Component {
       } 
       if (snapshot.val().p2.monster.source === "particle_fire_green.png") { 
         this.setState({
-          playerTwoTexture: require('./res/particles/particle_fire_green.png'),
+          playerOneTexture: require('./res/particles/particle_fire_green.png'),
           playerTwoObject : require('./res/heroes/greenDragon/green-dragon.vrx'),
           playerTwoObjectTexture : [require('./res/heroes/greenDragon/color-map-dents.png'),
                                 require('./res/heroes/greenDragon/color-map-eye.jpg'),
@@ -387,10 +386,9 @@ export default class ArenaGame extends Component {
   loadPortal = () => {
 
       return (
-          <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={()=>{}} >
+          <ViroPortalScene passable={true}>
 
-
-              <ViroPortal position={[0, 0, -.35]} scale={[.2, .2, .2]}>
+              <ViroPortal position={[0, 0, -.5]} scale={[.2, .2, .2]} dragType="FixedDistance" onDrag={()=>{}}>
                 <Viro3DObject source={require('./res/portal_res/portal_ship/portal_ship.vrx')}
                   resources={[require('./res/portal_res/portal_ship/portal_ship_diffuse.png'),
                               require('./res/portal_res/portal_ship/portal_ship_normal.png'),
@@ -777,3 +775,6 @@ ViroAnimations.registerAnimations({
 });
 
 module.exports = ArenaGame;
+
+
+// dragType="FixedDistance" onDrag={()=>{}}
